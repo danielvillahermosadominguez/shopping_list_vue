@@ -1,3 +1,22 @@
+# The Kata: Shopping List
+
+We need a web app to manage a list of items. The list of requirements:
+* An item has a name with more than 0 characters
+* The user can add an item
+* The user can remove a selected item
+* The user can modify the name of an item
+* The user can delete an item
+* The quantity of items of a name, should be shown.
+* The user can delete all the items, but it should be warned about this action
+
+The user interface must allow to the user to do this actions. Some recomendations:
+* A button for each action is a good option for the user
+* An input text for the name of theitem, is a good option for the user
+* Not more than 10 items should be presented in the screen at once
+* The name and the quantity in format of row of a table is a good option for the user
+* The pop up message is a good option for critical warnings which needs a confirmation of the user
+* Message for validations should be shown like little message below the input message 
+
 # Vue installation
 
 ## Creation of the repository
@@ -142,3 +161,11 @@ Also, you will have in Testing a UI to run your tests.
 }
 ```
 
+# The first UI design
+
+We are going to practice TDD with the user interface, but you will need to have the start page in white.
+
+* go to the HomeView.vue and remove the Helloworld component
+* Write "To be developed"
+
+Now you can start the kata
