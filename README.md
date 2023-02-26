@@ -10,12 +10,13 @@ We need a web app to manage a list of items. The list of requirements:
 * The user can delete all the items, but it should be warned about this action
 
 The user interface must allow to the user to do this actions. Some recomendations:
-* A button for each action is a good option for the user
-* An input text for the name of theitem, is a good option for the user
+* A button for each action is a good option for the user, but it should be interested to have a button in the own item to remove and update.
+* An input text for the name of the item, is a good option for the user whe he/she is adding a new item or deleting all the items.
 * Not more than 10 items should be presented in the screen at once
 * The name and the quantity in format of row of a table is a good option for the user
-* The pop up message is a good option for critical warnings which needs a confirmation of the user
-* Message for validations should be shown like little message below the input message 
+* The pop up message is a good option for critical warnings which needs a confirmation of the user or if he/she is asked for something
+* Message for validations should be shown like little message below the inputs fields.
+* Every user should have their own shopping list and they should see the shopping list of other users
 
 # Vue installation
 
