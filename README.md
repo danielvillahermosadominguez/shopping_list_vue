@@ -34,6 +34,13 @@ When you finish the creation of the repository you could use the following comma
     npm run test:unit // unit tests
     npm run lint // linter
  ```
+## The NVM windows installation
+
+You could want to use nvm for windows (we are using windows to develop). In this case you could choose a version of node and all the dependencies will be 
+installed on it.
+
+https://github.com/coreybutler/nvm-windows
+
 
  ## Push the repository
  If you have created in Github an empty repository you should follow the following instructions:
@@ -45,3 +52,93 @@ When you finish the creation of the repository you could use the following comma
 ```
 When you commit and push something, you should use the convenctions for git:
 https://ec.europa.eu/component-library/v1.15.0/eu/docs/conventions/git/
+
+# Including Testing library
+
+You have testing library in: https://testing-library.com/
+
+With the creation of the project you have installed the default framework for tests: test-utils. Now you should change it.
+
+The current example test with test utils is:
+``` ts
+import { shallowMount } from '@vue/test-utils'
+import HelloWorld from '@/components/HelloWorld.vue'
+
+describe('HelloWorld.vue', () => {
+  it('renders props.msg when passed', () => {
+    const msg = 'new message'
+    const wrapper = shallowMount(HelloWorld, {
+      propsData: { msg }
+    })
+    expect(wrapper.text()).toMatch(msg)
+  })
+})
+```
+
+You must install testing library with:
+
+``` bash
+npm install --save-dev @testing-library/vue@5 //for vue2. in case of vue2
+npm install --save-dev @testing-library/jest-dom
+
+```
+
+NOTE: --save-dev or -D option is used to install and save you project dependencies under the devDependencies object. They will be ignored when you run a production build
+
+Now, we are going to make some changes in the test:
+``` ts
+import {render} from '@testing-library/vue';
+import '@testing-library/jest-dom'
+import HelloWorld from '@/components/HelloWorld.vue';
+
+describe('HelloWorld.vue', () => {
+  it('renders props.msg when passed', () => {
+    const msg = 'new message'
+    const {getByText} = render(HelloWorld, {
+      propsData: {msg}
+    });
+    
+    expect(getByText(msg)).toBeInTheDocument();
+  })
+});
+```
+
+# Configuring Visual Studio Code
+
+You can select Run->add configuration and "jest debug...". You will hava a folder with .vcode and a file called launch.json
+
+Also, you will have in Testing a UI to run your tests.
+
+``` json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "node",
+            "name": "vscode-jest-tests.v2",
+            "request": "launch",
+            "args": [
+                "--runInBand",
+                "--watchAll=false",
+                "--testNamePattern",
+                "${jest.testNamePattern}",
+                "--runTestsByPath",
+                "${jest.testFile}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            }
+        }
+    ]
+}
+```
+
