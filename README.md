@@ -170,3 +170,151 @@ We are going to practice TDD with the user interface, but you will need to have 
 * Write "To be developed"
 
 Now you can start the kata
+
+# The graphQL configuration
+For this kata we are going to create a create a simple backend with apollo, but the final idea is to connect this Front with
+a bakend which will be created in other repository and with other technology. But for our tests, we will use  a simple apollo 
+server.
+
+Our front will use an apollo client to call to this fake server.
+
+## The apollo client configuration
+You have the instructions in apollo.vue.org. For Vue 3, the information is in:
+https://apollo.vuejs.org/guide/installation.html#_3-apollo-provider
+
+But in our case we are using Vue 2, so we will  need to review it:https://apollo.vuejs.org/migration/#plugin-setup
+
+The steps to prepare the solution for the Apollo client are:
+* Install apollo boost or Apollo client (more detailled configuration).  Apollo bost is a zero-config way to start using apollo clients with some sensible defautls. If we want to use the full configuration for Apollo client we need to configure more things.
+``` bash
+npm install --save vue-apollo graphql apollo-client apollo-link apollo-link-http apollo-cache-inmemory graphql-tag
+for vue 2.x
+npm install --save vue-apollo apollo-client@1.9.2
+npm install --save subscriptions-transport-ws@0.7
+
+```
+You will need to have in your app an ApolloClient instance. You should include it in the main.js file.
+
+``` ts
+// vue3
+import { ApolloClient } from 'apollo-client'
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+
+// HTTP connection to the API
+const httpLink = createHttpLink({
+  // You should use an absolute URL here
+  uri: 'http://localhost:3020/graphql',
+})
+
+// Cache implementation
+const cache = new InMemoryCache()
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  link: httpLink,
+  cache,
+})
+
+```
+* You will need to install the plugin into Vue
+  
+  ```ts
+  import Vue from 'vue';
+  import VueApollo from 'vue-apollo'
+  Vue.use(VueApollo)
+  ```
+
+* The apollo provider allow to be used the apollo client for the components
+
+``` ts
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+})
+```
+
+* And you could add in the app the apollo provider:
+
+``` ts
+new Vue({
+  el: '#app',
+  // inject apolloProvider here like vue-router or vuex
+  apolloProvider,
+  render: h => h(App),
+})
+```
+Now you are ready to use apollo in your components
+
+NOTE: For Visual Studio Code you have an extension. In this way you could have your "apollo.config.js" with the following 
+configuration
+```js
+// apollo.config.js
+module.exports = {
+  client: {
+    service: {
+      name: 'my-app',
+      // URL to the GraphQL API
+      url: 'http://localhost:3000/graphql',
+    },
+    // Files processed by the extension
+    includes: [
+      'src/**/*.vue',
+      'src/**/*.js',
+    ],
+  },
+}
+```
+
+NOTE: For vue 2, you need to take into account some changes.
+https://apollo.vuejs.org/migration/#packages-2
+
+``` ts
+import Vue from 'vue';
+import App from './App.vue';
+import VueApollo from 'vue-apollo';
+import router from './router';
+import { ApolloClient, createNetworkInterface, createBatchingNetworkInterface}  from 'apollo-client';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+Vue.config.productionTip = false
+
+
+// Create the network interface
+const networkInterface = createNetworkInterface({
+  uri: 'http://localhost:3000/graphql'
+})
+
+// Create the subscription websocket client
+const wsClient = new SubscriptionClient('ws://localhost:3000/subscriptions', {
+  reconnect: true,
+})
+
+// Extend the network interface with the subscription client
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
+  networkInterface,
+  wsClient,
+)
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  networkInterface: createBatchingNetworkInterface({
+    uri: 'http://localhost:3020/graphql',
+  }),
+  connectToDevTools: true,
+})
+
+// Install the vue plugin
+Vue.use(VueApollo, {
+  apolloClient,
+})
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+})
+
+new Vue({
+  // inject apolloProvider here like vue-router or vuex
+  apolloProvider,
+  router,
+  render: h => h(App)
+}).$mount('#app')
+```
+## The apollo server (fake) configuration
