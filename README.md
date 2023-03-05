@@ -5,7 +5,6 @@ We need a web app to manage a list of items. The list of requirements:
 * The user can add an item
 * The user can remove a selected item
 * The user can modify the name of an item
-* The user can delete an item
 * The quantity of items of a name, should be shown.
 * The user can delete all the items, but it should be warned about this action
 
@@ -17,6 +16,35 @@ The user interface must allow to the user to do this actions. Some recomendation
 * The pop up message is a good option for critical warnings which needs a confirmation of the user or if he/she is asked for something
 * Message for validations should be shown like little message below the inputs fields.
 * Every user should have their own shopping list and they should see the shopping list of other users
+
+# Labels in the repository
+* BASE_APOLLO => here you have a first project with everything you need to start the kata with apollo and graphql + VUE
+# Types of tests
+
+We are using vue and the testing types for vue are:
+* unit: focused on the class behaviours
+* component: focused on the component behaviours without to take into account integrations
+* end to end: we haven't done this kind of tests in this kata. You should use cypress or a similar tool.
+* We have included a folder which is not part of the recomendations for vue:
+  * integration: the integration between pages- components and other classes, trying to test the correct integration
+  * in this case, if we want to practice TDD-outside in, we would start with the page or main component
+  * Ideally, you should use e2e test with cypress, but in this case, it is not the focus of the kata.
+
+To do it, you will need to configurate jest. In jest, by default it is going to look for test in: default: [ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]
+https://jestjs.io/docs/configuration#testmatch-arraystring
+
+In jest.config.js you should add:
+``` ts
+module.exports = {
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+  testMatch: [
+     "**/__tests__/**/*.[jt]s?(x)",
+     "**/?(*.)+(spec|test).[tj]s?(x)"
+   ]
+}
+```
+
+And also, for ATDD we are going to use the exception:  throw new Error("Not implemented");  when a method or acceptance test is not implemented yet.
 
 # Vue installation
 
