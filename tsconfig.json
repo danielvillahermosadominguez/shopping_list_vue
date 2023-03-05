@@ -35,7 +35,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "tests/component/ShoppingList.vue"  ],
   "exclude": [
     "node_modules"
   ]

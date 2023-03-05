@@ -1,14 +1,16 @@
 <template>
   <div class="home">
-    <p> To be developed: Shopping List Kata in vue.js and grapql</p>
+    <ShoppingList></ShoppingList>
   </div>
 </template>
 
 <script lang="ts">
+import ShoppingList from '@/components/ShoppingList.vue';
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component({
   components: {
+    ShoppingList
       },
 })
 export default class HomeView extends Vue {}

@@ -1,14 +1,16 @@
 import Vue from 'vue';
 import App from './App.vue';
-import VueApollo from 'vue-apollo';
+import ShoppingList from './components/ShoppingList.vue';
+//import VueApollo from 'vue-apollo';
 import router from './router';
-import { ApolloClient, createNetworkInterface, createBatchingNetworkInterface}  from 'apollo-client';
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+//import { ApolloClient, createNetworkInterface, createBatchingNetworkInterface}  from 'apollo-client';
+//import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
 Vue.config.productionTip = false
 
-
+//Vue.component("HelloWorld", HelloWorld);
+Vue.component("ShoppingList", ShoppingList);
 // Create the network interface
-const networkInterface = createNetworkInterface({
+/*const networkInterface = createNetworkInterface({
   uri: 'http://localhost:3000/graphql'
 })
 
@@ -42,6 +44,13 @@ const apolloProvider = new VueApollo({
 new Vue({
   // inject apolloProvider here like vue-router or vuex
   apolloProvider,
+  router,
+  render: h => h(App)
+}).$mount('#app')
+*/
+
+new Vue({
+  // inject apolloProvider here like vue-router or vuex  
   router,
   render: h => h(App)
 }).$mount('#app')

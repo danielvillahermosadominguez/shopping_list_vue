@@ -1,3 +1,9 @@
+
+import HelloWorld from './components/HelloWorld.vue';
+
+
+import ShoppingList from './components/ShoppingList.vue';
+
 <template>
   <div id="app">
     <nav>
@@ -7,7 +13,6 @@
     <router-view/>
   </div>
 </template>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
