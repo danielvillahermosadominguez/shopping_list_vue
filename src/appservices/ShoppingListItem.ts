@@ -1,23 +1,24 @@
 export default class ShoppingListItem {
     _name: string;
     _quanity: number;
-    constructor() {
-        this._name = '';
-        this._quanity = 0;
+        
+    constructor(name = '', quantity = 0) {
+        this._name = name;
+        this._quanity = quantity;
     }
-    get name() {
+    public get name() {
         return this._name;
     }
 
-    set name(value:string) {
+    public set name(value:string) {
         this._name = value;
     }
 
-    get quantity() {
+    public get quantity() {
         return this._quanity;
     }
 
-    set quantity(value:number) {
+    public set quantity(value:number) {
         this._quanity = value
     }
 }

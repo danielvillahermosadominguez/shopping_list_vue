@@ -58,9 +58,11 @@ describe('Shopping list', () => {
         })
     });
 
-    it("should not have any value in the input when the button is clicked",  ()=> {        
+    it("should not have any value in the input when the button is clicked",  async ()=> {        
         const appService = new AppService();
-        appService.add = jest.fn();
+        appService.add = jest.fn((item:ShoppingListItem)=>  new Promise( ()=> {}));  
+        appService.getItems = jest.fn(()=>  new Promise( ()=> []));  
+        
         const rend = render(ShoppingList as any, {
             propsData : {
                 appService: appService
@@ -72,7 +74,7 @@ describe('Shopping list', () => {
     
         fireEvent.click(addItemButton);        
     
-        waitFor(()=>{
+        await waitFor(()=>{
             expect(input).not.toHaveValue();
         })        
     });
@@ -91,25 +93,32 @@ describe('Shopping list', () => {
     it("should shown an item when a new element is added",  async ()=> {        
         const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
         const appService = new AppService();
-        appService.add = jest.fn((item)=>shoppingList.push(item));
-        appService.getItems = jest.fn(()=> shoppingList);
-        const rend = render(ShoppingList as any, {
+        appService.add = async (item:ShoppingListItem) => {  return new Promise<undefined>( (resolve, reject)=> {            
+            shoppingList.push(item);  
+            resolve(undefined);
+            return undefined;                      
+        })};  
+        appService.getItems = jest.fn(async ()=>  new Promise<Array<ShoppingListItem>>( (resolve, reject)=>{             
+            resolve(shoppingList);
+            return shoppingList;
+        }));  
+        
+        const rend = await render(ShoppingList as any, {
             propsData : {
                 appService: appService
             }
-        });                  
-        const table = rend.getByRole('itemList');        
-        const input = rend.getByRole('itemInput');     
+        });           
+                       
+        const input = await rend.getByRole('itemInput');     
         await fireEvent.input(input,{target: {value: 'bread'}});                
         const addItemButton = rend.getByRole('addButton');
     
         await fireEvent.click(addItemButton);        
-
-        const itemBread = await rend.queryAllByText('bread');
-        const itemQuantity = await rend.queryAllByText('1');
-
-        expect(itemBread.length).toBe(1);
-        expect(itemQuantity.length).toBe(1);
+        
+        await waitFor(()=>{            
+            expect(rend.getByText('bread')).toBeInTheDocument();            
+            expect(rend.getByText('1')).toBeInTheDocument();            
+        });
     });
 
     

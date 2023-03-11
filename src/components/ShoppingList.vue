@@ -1,4 +1,4 @@
-<template>
+<template @new-item_has_been-added="refreshList()">
     <div class="hello"> 
         <label>
             Please, write the name of the item:<br>
@@ -22,13 +22,12 @@
                 </tr>
             </thead> 
             <tbody>
-                <tr  v-for="(item,index) in listItems" v-bind="listItems" :key="index">                    
+                <tr  v-for="(item,index) in listItems" v-bind="listItems" :key="index" >                    
                     <th>{{ index }}</th>
                     <th>{{ item.name }}</th>
                     <th>{{ item.quantity}}</th>
                 </tr>
-
-            </tbody>           
+            </tbody> 
         </table>
     </div>    
 </template>
@@ -37,6 +36,7 @@
 import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
+const emptyShoppingItem = new ShoppingListItem();
 export default defineComponent({           
     name: 'ShoppingList',
     props: {
@@ -45,28 +45,45 @@ export default defineComponent({
     data() {        
         return {            
             inputValue:'',
-            listItems: [] as Array<ShoppingListItem>
+            listItems: [] as Array<ShoppingListItem>,
+            lastAdded: emptyShoppingItem as ShoppingListItem
         }
-    },    
-    mounted() {
-        console.log("estoy aquí");
-    },
+    },        
     computed: {
          isButtonEnabled(): boolean {
             return this.$data.inputValue !== '';
-         }
+         },      
+    },
+    mounted() {      
+        this.refreshList();
+    },       
+    watch : {
+        lastAdded(newVal: ShoppingListItem) {            
+            this.refreshList();
+        }      
     },
     methods: {       
         addItem() {                        
             const item = new ShoppingListItem();    
             item.name = this.$data.inputValue;  
             this.$data.inputValue = '';    
-            item.quantity = 1;          
-            this.appService?.add(item);                                               
-            this.listItems = this.appService?.getItems() ?? [];
-            //this.$data.listItems.push(item);
-        }
-}
+            item.quantity = 1;                
+            if(this.appService !== undefined) {                                
+                this.appService.add(item).then(()=>{                                                                                           
+                    this.lastAdded = item;
+                });                                                     
+                
+                
+            }
+        },    
+        refreshList() {
+            if(this.appService) {          
+                this.appService.getItems().then(items=>{                    
+                    this.listItems = items;
+                });        
+            }
+        }   
+    }
 
 });
 </script>

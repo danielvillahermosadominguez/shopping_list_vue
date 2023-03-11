@@ -46,6 +46,41 @@ module.exports = {
 
 And also, for ATDD we are going to use the exception:  throw new Error("Not implemented");  when a method or acceptance test is not implemented yet.
 
+# Apollo Client - some notes
+
+Apollo Boost includes some packages that we think are essential to developing with Apollo Client. Here's what's in the box:
+
+apollo-client: Where all the magic happens
+apollo-cache-inmemory: Our recommended cache
+apollo-link-http: An Apollo Link for remote data fetching
+apollo-link-error: An Apollo Link for error handling
+graphql-tag: Exports the gql function for your queries & mutations
+
+The library @apollo/client is a old version below 3.x.
+https://stackoverflow.com/questions/64119385/difference-between-apollo-client-apollo-client-and-apollo-boost
+
+# Apollo Server
+
+We are going to use an apollo server in local to mock the calls to the server. So we will need intall:
+
+``` bash
+npm install apollo-server
+npm install uuid //This to generate uids for your mock service
+```
+
+And you need to include in the package.json
+```json
+...
+"type": "module", 
+...
+```
+
+You can execute the server with the following command:
+
+```
+node index.js
+```
+
 # Vue installation
 
 ## Creation of the repository
@@ -223,6 +258,8 @@ npm install --save subscriptions-transport-ws@0.7
 ```
 You will need to have in your app an ApolloClient instance. You should include it in the main.js file.
 
+make a look: https://www.npmjs.com/package/apollo-client?activeTab=versions: 1.9.2 is very 
+
 ``` ts
 // vue3
 import { ApolloClient } from 'apollo-client'
@@ -345,4 +382,18 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 ```
+
+Ojo, todo esto de apollo tenemos que cambiarlo.
+
+Además tener en cuenta que nos pide vuex, posiblemente por apollo? No lo se, pero para Vue2 tenemos que instalar esto:
+
+
 ## The apollo server (fake) configuration
+
++ load as a fixture with threads
+
+```
+npm install --save threads
+
+```
+

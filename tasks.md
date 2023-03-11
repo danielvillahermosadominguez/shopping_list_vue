@@ -11,3 +11,28 @@
   - [BUG]The about and home, doesn't work properly
 - Detected improvements:
   - Works in styles could be interesing. For example, the table, could need some lines.
+
+
+07.03.2023
+
+- doing a test to connect the apollo client in the integration test
+https://www.apollographql.com/docs/react/get-started/
+
+Now the code is not working and you are doing dirty code in the AppService: Proof of concept
+
+08.03.2023
+
+- doint a test to connect the apollo cliente in the integration test.
+  - We have created the mini-server with a fixture. We can run the apollo server and send queries and mutations
+  - We try to connect with two queries but we dont receive anything
+
+
+10/03/2023
+
+- I got to connect with apollo client to server client.
+- Now a problem with the test and the calls which are asynchronous.
+- We want to simulate a server service but it is not syncronous, so, for the clear mocks we need to look for some wind of wait for
+- And we need to use await for calls to asyncrhonous methods.
+- In the ShoppingList component, when I add an item, don't paint it (the server return always the same list). But reloading the page
+  we have all the items.
+
