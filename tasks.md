@@ -36,10 +36,22 @@ Now the code is not working and you are doing dirty code in the AppService: Proo
 - In the ShoppingList component, when I add an item, don't paint it (the server return always the same list). But reloading the page
   we have all the items.
 
-12/03/2023
+11/03/2023
 - We have the acceptance test running and with the server as a fixture
 - Next steps are:
   - Refactoring
   - Think about to use the ViewModel Pattern
   - Validation of the name. It should be unique and show a message of error.
+
+12/03/2023
+- We have include environment variables management for test
+- We have improved the mechanism to wait for the service fixture
+- First feature has finished: An user can add an item to the list
+- Next steps are:    
+  - Validation of the name. It should be unique and show a message of error.
+  - Working on the new acceptance test: An item has a name with more than 0 characters
+  - Writing the readme and conclusions after the first feature.
+- Parking lot:
+  - ViewModel pattern.
+  - Login
 

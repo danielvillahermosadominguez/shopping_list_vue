@@ -4,27 +4,43 @@ import '@testing-library/jest-dom';
 import { MemoryServiceFixture } from '@/apolloserver/memoryservicefixture';
 import HomeView from '@/views/HomeView.vue';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
+import '@/environment/loadvariables';
+
+jest.setTimeout(60000);
 
 describe('Shopping list acceptance tests', () => {
-  const appService = new AppService();
-  const serviceFixture = new MemoryServiceFixture(appService);
+  const appService = new AppService(
+    process.env.VUE_APP_SERVICE_BACKEND);
+  const serviceFixture = new MemoryServiceFixture(appService, 
+                                process.env.BACKEND_TIME_OUT?parseInt(process.env.BACKEND_TIME_OUT):undefined,
+                                process.env.BACKEND_TIME_OUT_INCREMENT?parseInt(process.env.BACKEND_TIME_OUT_INCREMENT):undefined);
 
-  beforeAll(async () => {
-    await serviceFixture.init();
+  beforeAll(async () => {    
+    try {
+      await serviceFixture.init();
+    } catch (e:any) {
+      serviceFixture.disposeFixture();
+      throw new Error("service fixture couldn't be initialized:" + e);
+    }
+    jest.setTimeout(5000);
   });
 
   afterEach(async () => {
     await appService.deleteAll();
   });
 
-  afterAll(async () => {
+  afterAll(() => {
     serviceFixture.disposeFixture();
   });
 
   it(`Given an empty list 
       When the user add an item
       Then the list has an item`, async () => {    
-    const rend = render(HomeView as any);
+    const rend = render(HomeView as any,{
+      props : {
+        appService: appService
+      }      
+    });
     const input = rend.getByRole('itemInput');
     fireEvent.input(input, { target: { value: 'bread' } });
     const addItemButton = rend.getByRole('addButton');
@@ -43,7 +59,11 @@ describe('Shopping list acceptance tests', () => {
       When the user add a new one element
       Then the list has two items of the same element`, async () => {    
     appService.add(new ShoppingListItem('bread', 1));        
-    const rend = render(HomeView as any);
+    const rend = render(HomeView as any,{
+      props : {
+        appService: appService
+      }      
+    });
     const input = rend.getByRole('itemInput');
     fireEvent.input(input, { target: { value: 'bread' } });
     const addItemButton = rend.getByRole('addButton');

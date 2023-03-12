@@ -3,15 +3,15 @@ import { ApolloClient, DefaultOptions } from 'apollo-client'
 import 'cross-fetch/polyfill';
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory'
-import gql from 'graphql-tag';
 import { QUERY_GET_ITEMS, MUTATION_ADD, MUTATION_DELETE_ALL } from '@/graphql/shoppinglist';
 
 export default class AppService {
   private apolloClient: ApolloClient<NormalizedCacheObject>;
 
-  public constructor() {
+  public constructor(url = '') {
+    console.log("Connecting to graphql service:" + url);
     const httpLink = createHttpLink({
-      uri: 'http://localhost:4000/graphql',
+      uri: url,
     })
 
     const defaultOptions: DefaultOptions = {

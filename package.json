@@ -16,6 +16,7 @@
     "apollo-server": "^3.12.0",
     "core-js": "^3.8.3",
     "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.3",
     "graphql": "^15.8.0",
     "graphql-tag": "^2.12.6",
     "threads": "^1.7.0",

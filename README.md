@@ -19,6 +19,7 @@ The user interface must allow to the user to do this actions. Some recomendation
 
 # Labels in the repository
 * BASE_APOLLO => here you have a first project with everything you need to start the kata with apollo and graphql + VUE
+* ADD_ITEM => here you have the implementation of the first feature by ATDD
 # Types of tests
 
 We are using vue and the testing types for vue are:
@@ -47,17 +48,17 @@ module.exports = {
 And also, for ATDD we are going to use the exception:  throw new Error("Not implemented");  when a method or acceptance test is not implemented yet.
 
 # Apollo Client - some notes
+I have created an application service to encaptusate the calls to apollo. In addition, we have created a fixture for the acceptance tests (not end to end).
+ * The class AppService contains all the code to configure the client. Some relevant libraries
 
-Apollo Boost includes some packages that we think are essential to developing with Apollo Client. Here's what's in the box:
-
-apollo-client: Where all the magic happens
-apollo-cache-inmemory: Our recommended cache
-apollo-link-http: An Apollo Link for remote data fetching
-apollo-link-error: An Apollo Link for error handling
-graphql-tag: Exports the gql function for your queries & mutations
-
-The library @apollo/client is a old version below 3.x.
-https://stackoverflow.com/questions/64119385/difference-between-apollo-client-apollo-client-and-apollo-boost
+``` bash
+npm install --save apollo-client
+npm install --save cross-fetch
+npm install --save apollo-link-http
+npm install --save apollo-cache-inmemory
+```
+ * the mutations and queries are in the same file: graphql\shoppinglist.ts
+ * 
 
 # Apollo Server
 
@@ -397,3 +398,44 @@ npm install --save threads
 
 ```
 
+# Environment and testing
+
+You need to have into account you could access to the environment variables in Vue with a file .env and creating the variables with
+the following prefix: VUE_APP_YOUR_VARIABLE.
+
+These variables will be loaded and you will be able to access to them with:
+
+process.env.VUE_APP_YOUR_VARIABLE
+
+the problem will be with jest, because these variables will be loaded when you are doing:
+
+```
+npm run dev
+
+```
+
+And launching the app.
+
+But to load environment variables indepent on it, for example, to run with the test with jest you have to
+https://stackoverflow.com/questions/48033841/test-process-env-with-jest
+
+1. npm install dotenv --save-dev dotenv that uses to access environment variable.
+2. Create your .env file to the root directory of your application and add this line into it (in this case you don't need to use the prefix for vuex)
+3. Create your custom module file as its name being someModuleForTest.js and add this line into it:
+
+```
+// someModuleForTest.js
+require("dotenv").config()
+```
+4. Update your jest.config.js file like this:
+```
+module.exports = {
+  setupFiles: ["./someModuleForTest"]
+}
+```
+5.You can access an environment variable within all test blocks.
+```
+test("Some test name", () => {
+  expect(process.env.APP_PORT).toBe("8080")
+})
+```
