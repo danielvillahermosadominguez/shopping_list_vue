@@ -58,7 +58,7 @@ export default defineComponent({
         this.refreshList();
     },       
     watch : {
-        lastAdded(newVal: ShoppingListItem) {            
+        lastAdded() {            
             this.refreshList();
         }      
     },

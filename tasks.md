@@ -36,3 +36,10 @@ Now the code is not working and you are doing dirty code in the AppService: Proo
 - In the ShoppingList component, when I add an item, don't paint it (the server return always the same list). But reloading the page
   we have all the items.
 
+12/03/2023
+- We have the acceptance test running and with the server as a fixture
+- Next steps are:
+  - Refactoring
+  - Think about to use the ViewModel Pattern
+  - Validation of the name. It should be unique and show a message of error.
+

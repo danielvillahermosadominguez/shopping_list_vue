@@ -1,12 +1,12 @@
 import ShoppingListItem from "./ShoppingListItem";
 import {ApolloClient, DefaultOptions}  from 'apollo-client'
 import 'cross-fetch/polyfill';
-import { HttpLink, createHttpLink} from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import { createHttpLink} from 'apollo-link-http'
+import { InMemoryCache,NormalizedCacheObject} from 'apollo-cache-inmemory'
 import gql from 'graphql-tag';
 
 export default class AppService {    
-    private apolloClient: any;
+    private apolloClient: ApolloClient<NormalizedCacheObject>;
  
     public constructor() {
       const httpLink = createHttpLink({
