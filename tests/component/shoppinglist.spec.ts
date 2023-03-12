@@ -60,7 +60,7 @@ describe('Shopping list', () => {
 
     it("should not have any value in the input when the button is clicked",  async ()=> {        
         const appService = new AppService();
-        appService.add = jest.fn((item:ShoppingListItem)=>  new Promise( ()=> {}));  
+        appService.add = jest.fn((item:ShoppingListItem)=>  new Promise(jest.fn()));  
         appService.getItems = jest.fn(()=>  new Promise( ()=> []));  
         
         const rend = render(ShoppingList as any, {

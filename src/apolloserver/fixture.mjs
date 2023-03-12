@@ -27,15 +27,13 @@ const typeDefinitions = gql (`
 const resolvers = {
     Query: {
         
-        items: () => { 
-            console.log("items is called")
+        items: () => {                                    
             return shoppingLists
         },        
     },
 
     Mutation: {
-        add: (root, args) => {
-            console.log("add is called")
+        add: (root, args) => {            
             if(shoppingLists.find(p=> p.name === args.name)) {                
                 throw new UserInputError('Name must be unique', {
                     invalidArgs: args.name
@@ -43,14 +41,12 @@ const resolvers = {
 
             }
             const item = {...args} //update database with new person            
-            shoppingLists.push(item)
-            console.log("push in the list is called")
+            shoppingLists.push(item)            
             return item
         },
         deleteAll: (root) => {
             const numberOfItems = shoppingLists.length;
-            shoppingLists.length = 0;
-            console.log("delete all" + ":" + numberOfItems+ " deleted items");
+            shoppingLists.length = 0;            
             return numberOfItems;
         }
     }

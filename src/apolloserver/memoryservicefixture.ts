@@ -1,42 +1,35 @@
-import { spawn, Thread, Worker} from 'threads';
-import * as path from 'path';
-
+import { Worker } from 'threads';
+import AppService from '@/appservices/AppService';
 
 export class MemoryServiceFixture {    
-    private directory:string = path.resolve();    
-    private worker:any;
-    
-    public async init() {        
-        this.worker = new Worker('fixture.mjs');
-        await this.worker.postMessage({
-            action:"start"            
-        }); 
-                
-        await this.worker.addEventListener("message", (e: any) => {
-            if(e.data) {
-                console.log('fixture is working');
-            }
-        })
+    private worker: any;
+    private appService: AppService;
+
+    public constructor(appServer: AppService) {
+        this.appService = appServer;
+    }
+
+    private async waitingForServer() {
+        let fin = false;
+        const list = [];
+        while (!fin) {
+            fin = await this.appService.serverIsReady();
+        }
+    }
+
+    public async init() {
+        this.startServer();
+        await this.waitingForServer();
     }
 
     private startServer() {
-        
-    }
-
-    public clearFixture() {
-        this.worker.postMessage({
-            action:"clear"
-        });        
-        this.worker.addEventListener("message", (e: any) => {
-            if(e.data) {
-                console.log("all the items has been deleted");
-            }
-
-        });
+        this.worker = new Worker('fixture.mjs');
     }
 
     public async disposeFixture() {
-        await Thread.terminate(this.worker);
+        await this.worker.terminate((e: any) => {
+            this.worker = null;
+        });
     }
 }
 
