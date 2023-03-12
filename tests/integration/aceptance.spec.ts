@@ -2,6 +2,7 @@ import { render, fireEvent, waitFor } from '@testing-library/vue';
 import ShoppingList from '@/components/ShoppingList.vue';
 import AppService from '@/appservices/AppService';
 import { MemoryServiceFixture } from '@/apolloserver/memoryservicefixture';
+import HomeView from '@/views/HomeView.vue';
 
 describe('Shopping list acceptance tests', () => {
   const appService = new AppService();
@@ -19,13 +20,8 @@ describe('Shopping list acceptance tests', () => {
     serviceFixture.disposeFixture();
   });
 
-  it('The user can add an item', async () => {
-    const appService = new AppService();
-    const rend = render(ShoppingList as any, {
-      propsData: {
-        appService: appService
-      }
-    });
+  it('The user can add an item', async () => {    
+    const rend = render(HomeView as any);
     const input = rend.getByRole('itemInput');
     fireEvent.input(input, { target: { value: 'bread' } });
     const addItemButton = rend.getByRole('addButton');
