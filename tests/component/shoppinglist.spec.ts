@@ -110,22 +110,4 @@ describe('Shopping list', () => {
             expect(rend.getByText('1')).toBeInTheDocument();
         });
     });
-
-
-    it.skip("should show an element in the list when an item is added", async () => {
-        const rend = render(ShoppingList as any);
-        const input = rend.getByRole('itemInput');
-        fireEvent.input(input, { target: { value: 'bread' } });
-        const addItemButton = rend.getByRole('addButton');
-
-        fireEvent.click(addItemButton);
-
-        waitFor(() => {
-            expect(input).not.toHaveValue();
-        })
-
-        const result = await rend.queryAllByText('BREAD');
-        expect(result.length).toBe(1);
-    });
-
 });

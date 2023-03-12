@@ -33,16 +33,16 @@ const resolvers = {
     },
 
     Mutation: {
-        add: (root, args) => {            
-            if(shoppingLists.find(p=> p.name === args.name)) {                
-                throw new UserInputError('Name must be unique', {
-                    invalidArgs: args.name
-                })
-
-            }
-            const item = {...args} //update database with new person            
-            shoppingLists.push(item)            
-            return item
+        add: async (root, args) => {                                    
+            const itemFound = await shoppingLists.find(p=> p.name === args.name);
+            let item = {...args}             
+            if(itemFound === undefined) {                                
+                shoppingLists.push(item)            
+                return item;
+            } 
+            
+            itemFound.quantity+= item.quantity;                                
+            return itemFound;
         },
         deleteAll: (root) => {
             const numberOfItems = shoppingLists.length;

@@ -1,8 +1,9 @@
 import { render, fireEvent, waitFor } from '@testing-library/vue';
-import ShoppingList from '@/components/ShoppingList.vue';
 import AppService from '@/appservices/AppService';
+import '@testing-library/jest-dom';
 import { MemoryServiceFixture } from '@/apolloserver/memoryservicefixture';
 import HomeView from '@/views/HomeView.vue';
+import ShoppingListItem from '@/appservices/ShoppingListItem';
 
 describe('Shopping list acceptance tests', () => {
   const appService = new AppService();
@@ -20,7 +21,28 @@ describe('Shopping list acceptance tests', () => {
     serviceFixture.disposeFixture();
   });
 
-  it('The user can add an item', async () => {    
+  it(`Given an empty list 
+      When the user add an item
+      Then the list has an item`, async () => {    
+    const rend = render(HomeView as any);
+    const input = rend.getByRole('itemInput');
+    fireEvent.input(input, { target: { value: 'bread' } });
+    const addItemButton = rend.getByRole('addButton');
+    
+    await fireEvent.click(addItemButton);
+
+    let result;
+
+    await waitFor(() => {
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('1')).toBeInTheDocument();
+    });
+  })
+
+  it(`Given a list with an element       
+      When the user add a new one element
+      Then the list has two items of the same element`, async () => {    
+    appService.add(new ShoppingListItem('bread', 1));        
     const rend = render(HomeView as any);
     const input = rend.getByRole('itemInput');
     fireEvent.input(input, { target: { value: 'bread' } });
@@ -30,9 +52,9 @@ describe('Shopping list acceptance tests', () => {
 
     let result;
 
-    await waitFor(() => {
-      result = rend.queryAllByText('bread');
-      expect(result.length).toBe(1);
+    await waitFor(() => {      
+      expect(rend.getByText('bread')).toBeInTheDocument();            
+      expect(rend.getByText('2')).toBeInTheDocument();
     });
   })
 
