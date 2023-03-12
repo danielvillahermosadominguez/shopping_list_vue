@@ -5,7 +5,7 @@ import { MemoryServiceFixture } from '@/apolloserver/memoryservicefixture';
 
 describe('Shopping list acceptance tests', () => {
   const appService = new AppService();
-  const serviceFixture = new MemoryServiceFixture(appService);  
+  const serviceFixture = new MemoryServiceFixture(appService);
 
   beforeAll(async () => {
     await serviceFixture.init();

@@ -13,7 +13,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/about',
-    name: 'about',   
+    name: 'about',
     component: AboutView
   }
 ]

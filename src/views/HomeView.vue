@@ -13,10 +13,10 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component({
   components: {
     ShoppingList
-      },
+  },
 })
 export default class HomeView extends Vue {
-  
+
   public appService = new AppService();
 }
 </script>
