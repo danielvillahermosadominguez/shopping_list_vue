@@ -1,12 +1,13 @@
 import { Worker } from 'threads';
 import AppService from '@/appservices/AppService';
-function waitFor(millisec:any) {
+import { WorkerImplementation } from 'threads/dist/types/master';
+function waitFor(millisec:number) {
     return new Promise(resolve => {
         setTimeout(() => { resolve('') }, millisec);
     })
 }
 export class MemoryServiceFixture {    
-    private worker: any;
+    private worker: WorkerImplementation | undefined;
     private appService: AppService;
     private timeOut:number;
     private increment:number;
@@ -18,8 +19,7 @@ export class MemoryServiceFixture {
 
     private async waitingForServer() {        
         let counter = 0;        
-        let end = false;
-        const list = [];
+        let end = false;        
         while (!end && counter < this.timeOut) {            
             end = await this.appService.serverIsReady();
             await waitFor(this.increment);
@@ -27,7 +27,7 @@ export class MemoryServiceFixture {
         }
 
         if(!end) {
-            throw new Error("Not possible to contact with server with timeout of" +this.timeOut/1000 + " seconds");
+            throw new Error("Not possible to contact with server with timeout of " +this.timeOut/1000 + " seconds");
         }
     }
 
@@ -41,9 +41,8 @@ export class MemoryServiceFixture {
     }
 
     public async disposeFixture() {
-        await this.worker.terminate((e: any) => {
-            this.worker = null;
-        });
+        await this.worker?.terminate();
+        this.worker = undefined;
     }
 }
 

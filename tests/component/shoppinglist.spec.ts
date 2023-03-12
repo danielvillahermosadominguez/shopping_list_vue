@@ -9,8 +9,9 @@ describe('Shopping list', () => {
     let rend: RenderResult;
     const appService = new AppService();
     beforeEach(()=>{        
-        appService.add = jest.fn((item: ShoppingListItem) => new Promise(jest.fn()));
+        appService.add = jest.fn(() => new Promise(jest.fn()));
         appService.getItems = jest.fn(() => new Promise(() => []));
+        // eslint-disable-next-line
         rend = render(ShoppingList as any, {
             propsData: {
                 appService: appService
@@ -75,11 +76,9 @@ describe('Shopping list', () => {
         })
     });
 
-    it("should shown the headers of the Shopping list empty when there is not elements", async () => {        
-        const table = rend.getByRole('itemList');
-
-        const itemHeader = await rend.queryAllByText('Item');
-        const quantityHeader = await rend.queryAllByText('Quantity');
+    it("should shown the headers of the Shopping list empty when there is not elements", async () => {                
+        const itemHeader =  rend.queryAllByText('Item');
+        const quantityHeader = rend.queryAllByText('Quantity');
 
         expect(itemHeader.length).toBe(1);
         expect(quantityHeader.length).toBe(1);
@@ -88,14 +87,14 @@ describe('Shopping list', () => {
     it("should shown an item when a new element is added", async () => {
         const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();        
         appService.add = async (item: ShoppingListItem) => {
-            return new Promise<undefined>((resolve, reject) => {
+            return new Promise<undefined>((resolve) => {
                 shoppingList.push(item);
                 resolve(undefined);
                 return undefined;
             })
         };
 
-        appService.getItems = jest.fn(async () => new Promise<Array<ShoppingListItem>>((resolve, reject) => {
+        appService.getItems = jest.fn(async () => new Promise<Array<ShoppingListItem>>((resolve) => {
             resolve(shoppingList);
             return shoppingList;
         }));        

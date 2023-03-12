@@ -74,7 +74,7 @@ export default class AppService {
   public async serverIsReady(): Promise<boolean> {
     let result = false;
     try {
-      const list = await this.getItems();
+      await this.getItems();
       result = true;
     } catch {
       result = false;
