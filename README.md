@@ -1,7 +1,7 @@
 # The Kata: Shopping List
 
 We need a web app to manage a list of items. The list of requirements:
-* An item has a name with more than 0 characters
+* An item has a name must start with A-Z or a-z or a number but no spaces before the first character
 * The user can add an item
 * The user can remove a selected item
 * The user can modify the name of an item

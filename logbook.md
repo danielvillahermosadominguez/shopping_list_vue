@@ -55,3 +55,29 @@ Now the code is not working and you are doing dirty code in the AppService: Proo
   - ViewModel pattern.
   - Login
 
+
+13/03/2023
+- We have started the Validation of the name. It should be unique and show a message of error.
+  - Acceptance test failing for the right error and first unit test failing
+- Next steps are:        
+  - Writing the readme and conclusions after the first feature.
+- Parking lot:
+  - ViewModel pattern.
+  - Login
+
+14/03/2023
+
+- We have the validation of the name, but we need:
+  - include more cases for the unit testing
+  - to think about the format of the label,maybe an style
+- Next steps are:        
+  - Finish this feature and push to master
+  - Writing the readme and conclusions after the first feature.
+  - to get a new feature
+  - Styles
+- Parking lot:
+  - ViewModel pattern.
+  - Login
+
+
+

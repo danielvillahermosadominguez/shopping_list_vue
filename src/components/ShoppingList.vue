@@ -1,11 +1,17 @@
 <template @new-item_has_been-added="refreshList()">
     <div class="hello">
-        <label>
-            Please, write the name of the item:<br>
-            <input type="text" role="itemInput" v-model="inputValue" />
+        <label for="input_text">
+            Please, write the name of the item:
+            <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" />            
         </label>
-        <button role="addButton" :disabled="!isButtonEnabled" v-on:click="addItem">add item</button>
+        <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
         <br />
+        <div>
+            <p v-if="error!==''" class="error">{{ error }}</p> 
+            <p class ="info" v-else>For example: Bread</p>
+            <br/>            
+        </div>
+        
         <span>Your shopping list</span>
         <table role="itemList">
             <thead>
@@ -46,13 +52,9 @@ export default defineComponent({
         return {
             inputValue: '',
             listItems: [] as Array<ShoppingListItem>,
-            lastAdded: emptyShoppingItem as ShoppingListItem
+            lastAdded: emptyShoppingItem as ShoppingListItem,
+            error:''
         }
-    },
-    computed: {
-        isButtonEnabled(): boolean {
-            return this.$data.inputValue !== '';
-        },
     },
     mounted() {
         this.refreshList();
@@ -74,6 +76,20 @@ export default defineComponent({
                 });
             }
         },
+        isValidInput(): boolean {
+            this.$data.error = '';
+            const text = this.$data.inputValue;            
+            if(text === '') {
+                return false;
+            }
+            const regex = new RegExp("^[A-Za-z0-9].");            
+            if(!regex.test(text)) {
+                this.$data.error = 'The text must start with A-Z, a-z or a number but no spaces before the first character';
+                return false;
+            }
+
+            return true;
+        },
         refreshList() {
             if (this.appService) {
                 this.appService.getItems().then(items => {
@@ -85,4 +101,39 @@ export default defineComponent({
 
 });
 </script>
-<style></style>
+<style>
+body{
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 13px;
+		}
+		.success, .warning, .validation {
+			border: 1px solid;
+			margin: 10px 0px;
+			padding: 15px 10px 15px 50px;
+			background-repeat: no-repeat;
+			background-position: 10px center;
+		}
+		.info {
+			color: #00529B;
+			font-size: 12px;	
+		}
+		.success {
+			color: #4F8A10;
+			background-color: #DFF2BF;
+			background-image: url('https://i.imgur.com/Q9BGTuy.png');
+		}
+		.warning {
+			color: #9F6000;
+			background-color: #FEEFB3;
+			background-image: url('https://i.imgur.com/Z8q7ww7.png');
+		}
+		.error{
+			color: #D8000C;            
+			font-size: 12px;	
+		}
+		.validation{
+			color: #D63301;
+			background-color: #FFCCBA;
+			background-image: url('https://i.imgur.com/GnyDvKN.png');
+		}
+</style>

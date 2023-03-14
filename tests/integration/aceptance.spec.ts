@@ -18,7 +18,7 @@ describe('Shopping list acceptance tests', () => {
   beforeAll(async () => {
     try {
       await serviceFixture.init();
-    } catch (e: Error|unknown) {
+    } catch (e: Error | unknown) {
       serviceFixture.disposeFixture();
       throw new Error("service fixture couldn't be initialized:" + e);
     }
@@ -45,7 +45,7 @@ describe('Shopping list acceptance tests', () => {
     fireEvent.input(input, { target: { value: 'bread' } });
     const addItemButton = rend.getByRole('addButton');
 
-    await fireEvent.click(addItemButton);    
+    await fireEvent.click(addItemButton);
 
     await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();
@@ -73,6 +73,31 @@ describe('Shopping list acceptance tests', () => {
       expect(rend.getByText('2')).toBeInTheDocument();
     });
   })
+
+  it(`Given a list with elements
+  When the user add a new one element with a wrong format
+  Then this element cannot be included in the list`, async () => {
+    appService.add(new ShoppingListItem('bread', 1));
+    const rend = render(HomeView, {
+      props: {
+        appService: appService
+      }
+    });
+
+    const input = rend.getByRole('itemInput');
+    fireEvent.input(input, { target: { value: '  bre' } });    
+
+    const addItemButton = rend.getByRole('addButton');
+    
+    await waitFor(async () => {      
+      expect(await rend.getByLabelText('Please, write the name of the item:')).toHaveValue('  bre');
+      expect(rend.getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
+      expect(addItemButton).toBeDisabled();
+
+    });
+
+  })
+
 
   it.skip('The user can remove a selected item', () => {
     throw new Error("Not implemented");

@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, RenderResult } from '@testing-library/vue';
+import { render, fireEvent, waitFor, RenderResult, getByText } from '@testing-library/vue';
 import '@testing-library/jest-dom'
 import ShoppingList from '@/components/ShoppingList.vue';
 import AppService from '@/appservices/AppService';
@@ -45,6 +45,7 @@ describe('Shopping list', () => {
 
     it("should disable the button when the input is empty", () => {        
         const input = rend.getByRole('itemInput');
+        fireEvent.input(input, { target: { value: ''} });
 
         const addItemButton = rend.getByRole('addButton');
 
@@ -52,6 +53,21 @@ describe('Shopping list', () => {
         expect(addItemButton).toBeDisabled();
     });
 
+    it.each([      
+        ["less than 1 character","a"]        
+    ])("should disable the button when the input is %s = '%s' and show a message", async (_:string, param:string) => {        
+        const input = rend.getByRole('itemInput');
+        await fireEvent.input(input, { target: { value: param } });
+
+        const addItemButton = rend.getByRole('addButton');
+        
+        await waitFor(async ()=> {
+            expect(input).toHaveValue(param);
+            expect(addItemButton).toBeDisabled();
+            expect(rend.getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();            
+        });
+    });
+    
     it("should enable the button when the input is not empty", () => {        
         const input = rend.getByRole('itemInput');
         fireEvent.input(input, { target: { value: 'bread' } });
