@@ -54,7 +54,10 @@ describe('Shopping list', () => {
     });
 
     it.each([      
-        ["less than 1 character","a"]        
+        ["less than 1 character","a"],
+        ["one space"," "],
+        ["some spaces and characters","  aa11"]
+
     ])("should disable the button when the input is %s = '%s' and show a message", async (_:string, param:string) => {        
         const input = rend.getByRole('itemInput');
         await fireEvent.input(input, { target: { value: param } });
