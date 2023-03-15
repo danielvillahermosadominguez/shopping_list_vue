@@ -80,6 +80,15 @@ Now the code is not working and you are doing dirty code in the AppService: Proo
   - Login
 
 15/03/2023
+- Improvement of styles
+- finished the validation tests
+-Next steps are:         
+  - to get a new feature: The user can remove a selected item + delete all items
+  - Writing the readme and conclusions after the first feature.  
+  - Common styles for all the application
+- Parking lot:
+  - ViewModel pattern.
+  - Login
 
 
 
