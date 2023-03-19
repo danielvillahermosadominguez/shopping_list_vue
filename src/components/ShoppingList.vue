@@ -8,6 +8,8 @@
                 </label>
                 
                 <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
+                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="showModal = true">delete all items</button>
+                <ContinueQuestion role = "questionForm" v-if="showModal" header="" question="You are going to delete all the items.are you sure?" @ok="deleteAll" @cancel="showModal=false"> </ContinueQuestion>
                 <br>
                 <p v-if="error !== ''" class="error">{{ error }}</p>
                 <p class="info" v-else>For example: Bread</p>
@@ -45,19 +47,21 @@
 import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
+import ContinueQuestion from './ContinueQuestion.vue';
 const emptyShoppingItem = new ShoppingListItem();
 export default defineComponent({
-    name: 'ShoppingList',
+    name: "ShoppingList",
     props: {
         appService: AppService
     },
     data() {
         return {
-            inputValue: '',
+            inputValue: "",
             listItems: [] as Array<ShoppingListItem>,
             lastAdded: emptyShoppingItem as ShoppingListItem,
-            error: ''
-        }
+            error: "",
+            showModal: false,
+        };
     },
     mounted() {
         this.refreshList();
@@ -72,36 +76,49 @@ export default defineComponent({
             const item = new ShoppingListItem();
             item.name = this.$data.inputValue;
             item.quantity = 1;
-            this.$data.inputValue = '';
+            this.$data.inputValue = "";
             if (this.appService !== undefined) {
                 this.appService.add(item).then(() => {
                     this.lastAdded = item;
                 });
             }
         },
+        deleteAll() {
+            if (this.appService !== undefined) {
+                this.appService.deleteAll();
+                this.refreshList();             
+            }
+
+            this.showModal = false;
+        },
         isValidInput(): boolean {
-            this.$data.error = '';
+            this.$data.error = "";
             const text = this.$data.inputValue;
-            if (text === '') {
+            if (text === "") {
                 return false;
             }
             const regex = new RegExp("^[A-Za-z0-9].");
             if (!regex.test(text)) {
-                this.$data.error = 'The text must start with A-Z, a-z or a number but no spaces before the first character';
+                this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
                 return false;
             }
-
             return true;
+        },
+        canIDeleteAtLeastOne(): boolean {
+            const variable = this.listItems.length > 0;
+            console.log("¿boton delete debe estar?" + variable);
+            return variable;
         },
         refreshList() {
             if (this.appService) {
                 this.appService.getItems().then(items => {
+                    console.log("LA LISTA TIENE " + items.length + " elementos");
                     this.listItems = items;
                 });
             }
         }
-    }
-
+    },
+    components: { ContinueQuestion }
 });
 </script>
 <style>

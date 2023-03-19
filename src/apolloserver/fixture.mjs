@@ -1,7 +1,10 @@
 import { gql, ApolloServer, UserInputError} from 'apollo-server'
 import { v1 as uuid } from 'uuid'
 
-const shoppingLists = []
+const shoppingLists = [{
+    "name": "hola",
+    "quantity": 1    
+}]
 
 const typeDefinitions = gql (`
     type ShoppingListItem {

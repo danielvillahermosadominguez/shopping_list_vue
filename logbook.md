@@ -90,6 +90,23 @@ Now the code is not working and you are doing dirty code in the AppService: Proo
   - ViewModel pattern.
   - Login
 
+19/03/2023
+  - Implementation of delete all - Unit test and acceptance tests
+  - Question dialog (without tests) + some styles
+-Next steps are:         
+  - Review and refactor of the test and code.
+  - to get a new feature: The user can remove a selected item
+  - Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush
+  - Common styles for all the application
+- Parking lot:
+  - ViewModel pattern.
+  - Login
+
+BUGS:
+- CI = The first time I execute acceptance tests they fail.
+- UI = the HTML elements change their size. To improve for better experience
+- UI = About page is not working
 
 
 

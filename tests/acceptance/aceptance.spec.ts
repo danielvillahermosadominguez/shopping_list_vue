@@ -5,6 +5,7 @@ import { MemoryServiceFixture } from '@/apolloserver/memoryservicefixture';
 import HomeView from '@/views/HomeView.vue';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import '@/environment/loadvariables';
+import flushPromises from 'flush-promises';
 
 jest.setTimeout(10000);
 
@@ -98,6 +99,87 @@ describe('Shopping list acceptance tests', () => {
 
   })
 
+  it(`Given a list with elements
+           When the user delete all items
+           And refuse this action
+           Then no items are removed` , async () => {
+            appService.add(new ShoppingListItem('bread', 5));
+            appService.add(new ShoppingListItem('milk', 3));
+            appService.add(new ShoppingListItem('carrots', 6));
+
+            const rend = render(HomeView, {
+              props: {
+                appService: appService
+              }
+            });
+            await flushPromises();
+            let bread:HTMLHtmlElement;
+            let milk:HTMLHtmlElement;
+            let carrots:HTMLHtmlElement;
+            await waitFor(() => {
+              bread = rend.getByText('bread');
+              milk = rend.getByText('milk');
+              carrots = rend.getByText('carrots');
+              expect(bread).toBeInTheDocument();              
+              expect(milk).toBeInTheDocument();              
+              expect(carrots).toBeInTheDocument();              
+            });
+
+            const deleteAllButton = rend.getByRole('deleteAllButton');            
+            await fireEvent.click(deleteAllButton);
+            expect(rend.getByRole('questionForm')).toBeInTheDocument();            
+            const refuseDeleteAll = rend.getByText('Cancel');
+            
+            await fireEvent.click(refuseDeleteAll);
+
+            await waitFor(() => {
+              expect(bread).toBeInTheDocument();              
+              expect(bread).toBeInTheDocument();              
+              expect(bread).toBeInTheDocument();              
+              expect(deleteAllButton).toBeEnabled();
+            });
+  })
+  
+  it.skip(`Given a list with elements
+           When the user delete all items
+           And verify this action
+           Then all the items are removed` , async () => {         
+            appService.add(new ShoppingListItem('bread', 5));
+            appService.add(new ShoppingListItem('milk', 3));
+            appService.add(new ShoppingListItem('carrots', 6));
+
+            const rend = render(HomeView, {
+              props: {
+                appService: appService
+              }
+            });
+            await flushPromises();
+            let bread:HTMLHtmlElement;
+            let milk:HTMLHtmlElement;
+            let carrots:HTMLHtmlElement;
+            await waitFor(() => {
+              bread = rend.getByText('bread');
+              milk = rend.getByText('milk');
+              carrots = rend.getByText('carrots');
+              expect(bread).toBeInTheDocument();              
+              expect(milk).toBeInTheDocument();              
+              expect(carrots).toBeInTheDocument();              
+            });
+
+            const deleteAllButton = rend.getByRole('deleteAllButton');            
+            await fireEvent.click(deleteAllButton);
+            expect(rend.getByRole('questionForm')).toBeInTheDocument();            
+            const acceptDeleteAll = rend.getByText('Ok');
+            
+            await fireEvent.click(acceptDeleteAll);
+
+            await waitFor(() => {
+              expect(bread).not.toBeInTheDocument();              
+              expect(bread).not.toBeInTheDocument();              
+              expect(bread).not.toBeInTheDocument();              
+              expect(deleteAllButton).toBeDisabled();
+            });
+  })
 
   it.skip('The user can remove a selected item', () => {
     throw new Error("Not implemented");
@@ -107,7 +189,4 @@ describe('Shopping list acceptance tests', () => {
     throw new Error("Not implemented");
   })
 
-  it.skip('The user can delete all the items, but it should be warned about this action', () => {
-    throw new Error("Not implemented");
-  })
 });
