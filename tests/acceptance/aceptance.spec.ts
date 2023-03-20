@@ -140,7 +140,7 @@ describe('Shopping list acceptance tests', () => {
             });
   })
   
-  it.skip(`Given a list with elements
+  it(`Given a list with elements
            When the user delete all items
            And verify this action
            Then all the items are removed` , async () => {         
@@ -169,20 +169,51 @@ describe('Shopping list acceptance tests', () => {
             const deleteAllButton = rend.getByRole('deleteAllButton');            
             await fireEvent.click(deleteAllButton);
             expect(rend.getByRole('questionForm')).toBeInTheDocument();            
-            const acceptDeleteAll = rend.getByText('Ok');
+            const acceptDeleteAll = rend.getByText('Accept');
             
             await fireEvent.click(acceptDeleteAll);
 
             await waitFor(() => {
               expect(bread).not.toBeInTheDocument();              
-              expect(bread).not.toBeInTheDocument();              
-              expect(bread).not.toBeInTheDocument();              
+              expect(milk).not.toBeInTheDocument();              
+              expect(carrots).not.toBeInTheDocument();              
               expect(deleteAllButton).toBeDisabled();
             });
   })
 
-  it.skip('The user can remove a selected item', () => {
-    throw new Error("Not implemented");
+  it(`Given a list with elements
+          When the user remove one element
+          And the user accept to delete it
+          The item is removed`, async () => {
+    appService.add(new ShoppingListItem('bread', 5));
+    appService.add(new ShoppingListItem('milk', 3));
+    appService.add(new ShoppingListItem('carrots', 6));
+
+    const rend = render(HomeView, {
+      props: {
+        appService: appService
+      }
+    });
+    await flushPromises();    
+    await waitFor(() => {      
+      expect(rend.getByText('bread')).toBeInTheDocument();              
+      expect(rend.getByText('milk')).toBeInTheDocument();              
+      expect(rend.getByText('carrots')).toBeInTheDocument();              
+    });
+
+    const deleteItemButtons = rend.getAllByRole('deleteItem');            
+    const deleteBreadButton = deleteItemButtons[0];
+    await fireEvent.click(deleteBreadButton);
+    expect(rend.getByRole('questionForm')).toBeInTheDocument();            
+    const acceptButton = rend.getByText('Accept');
+    
+    await fireEvent.click(acceptButton);
+
+    await waitFor(async () => {                        
+      expect(rend.getByText('milk')).toBeInTheDocument();              
+      expect(rend.getByText('carrots')).toBeInTheDocument();
+      expect(await rend.queryByText('bread')).toBeNull();
+    });
   })
 
   it.skip('The user can modify the name of an item', () => {

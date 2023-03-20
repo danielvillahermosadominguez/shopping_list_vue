@@ -8,11 +8,11 @@
                 </label>
                 
                 <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
-                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="showModal = true">delete all items</button>
-                <ContinueQuestion role = "questionForm" v-if="showModal" header="" question="You are going to delete all the items.are you sure?" @ok="deleteAll" @cancel="showModal=false"> </ContinueQuestion>
+                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">delete all items</button>
+                <ContinueQuestion role = "questionForm" v-if="showModal" header="" :question="modalMessage" @ok="executeAction(action)" @cancel="cancelLastAction()"> </ContinueQuestion>
                 <br>
                 <p v-if="error !== ''" class="error">{{ error }}</p>
-                <p class="info" v-else>For example: Bread</p>
+                <p class="info" v-else>For example: Jam</p>
                 <br />
                 <h1>Your shopping list</h1>
                 <table role="itemList" class="table">
@@ -27,13 +27,20 @@
                             <th>
                                 Quantity
                             </th>
+                            <th>
+                                Action
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in listItems" v-bind="listItems" :key="index">
-                            <td>{{ index }}</td>
+                        <tr v-for="(item, index) in listItems" v-bind="listItems" :key="index">                            
                             <td>{{ item.name }}</td>
                             <td>{{ item.quantity }}</td>
+                            <td>
+                                <button role="deleteItem" v-on:click="askToDeleteOne(item)"> 
+                                    <img src="@/assets/deleteItem.png" heigth="16px" width="16px">
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -48,6 +55,7 @@ import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
 import ContinueQuestion from './ContinueQuestion.vue';
+import { MUTATION_DELETE_ALL } from '@/graphql/shoppinglist';
 const emptyShoppingItem = new ShoppingListItem();
 export default defineComponent({
     name: "ShoppingList",
@@ -56,11 +64,14 @@ export default defineComponent({
     },
     data() {
         return {
-            inputValue: "",
+            inputValue: '',
             listItems: [] as Array<ShoppingListItem>,
             lastAdded: emptyShoppingItem as ShoppingListItem,
-            error: "",
+            error: '',
             showModal: false,
+            modalMessage:'',
+            action:'',
+            actionArgument:undefined as ShoppingListItem|undefined,
         };
     },
     mounted() {
@@ -83,13 +94,41 @@ export default defineComponent({
                 });
             }
         },
+        askToDeleteAll() {
+            this.modalMessage = "You are going to delete all the items. Are you sure?";
+            this.action = "deleteAll";
+            this.showModal = true;
+        },
+        askToDeleteOne(item:ShoppingListItem) {
+            this.modalMessage = `You are going to remove the item ${item.name}. Are you sure?`;
+            this.action = "deleteSelectedItem";
+            this.actionArgument = item;
+            this.showModal = true;
+        },
+        cancelLastAction() {
+            this.modalMessage = '';
+            this.action = '';
+            this.showModal = false;
+        },
+        executeAction() {
+            if (this.action === 'deleteAll') {
+                this.deleteAll();
+            } else if ((this.action === 'deleteSelectedItem') && (this.actionArgument !== undefined)) {
+                this.deleteItem(this.actionArgument);
+            }
+            this.cancelLastAction();
+        },
         deleteAll() {
             if (this.appService !== undefined) {
                 this.appService.deleteAll();
                 this.refreshList();             
-            }
-
-            this.showModal = false;
+            }            
+        },
+        deleteItem(item:ShoppingListItem) {
+            if (this.appService !== undefined) {
+                this.appService.deleteItem(item);
+                this.refreshList();             
+            }    
         },
         isValidInput(): boolean {
             this.$data.error = "";
@@ -105,14 +144,12 @@ export default defineComponent({
             return true;
         },
         canIDeleteAtLeastOne(): boolean {
-            const variable = this.listItems.length > 0;
-            console.log("¿boton delete debe estar?" + variable);
+            const variable = this.listItems.length > 0;            
             return variable;
         },
         refreshList() {
             if (this.appService) {
-                this.appService.getItems().then(items => {
-                    console.log("LA LISTA TIENE " + items.length + " elementos");
+                this.appService.getItems().then(items => {                    
                     this.listItems = items;
                 });
             }
@@ -185,8 +222,10 @@ th {
     font-weight: normal;
     padding: 8px;
     background: #b9c9fe;
-    border-top: 4px solid #aabcfe;
+    border-top: 1px solid #aabcfe;
     border-bottom: 1px solid #fff;
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
     color: #039;
     font-weight: bold
 }
@@ -195,6 +234,8 @@ td {
     padding: 8px;
     background: #e8edff;
     border-bottom: 1px solid #fff;
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
     color: #669;
     border-top: 1px solid transparent;
 }

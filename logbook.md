@@ -109,5 +109,22 @@ BUGS:
 - UI = About page is not working
 
 
+20/03/2023
+- Implementation of delete one element
+- Implementation of update one element
 
+-Next steps are:         
+  - Review and refactor of the test and code.
+  - to get a new feature: The user can decrease and increment a selected item
+  - Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush
+  - Common styles for all the application
+- Parking lot:
+  - ViewModel pattern.
+  - Login
 
+BUGS:
+- CI = The first time I execute acceptance tests they fail.
+    - We have several flaky tests. We should review them
+- UI = the HTML elements change their size. To improve for better experience
+- UI = About page is not working

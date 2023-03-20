@@ -310,5 +310,100 @@ describe('Shopping list', () => {
                 expect(carrots).not.toBeInTheDocument();
             });
         });
+
+        it("should exist a button to delete an item", async () => {
+            appService.deleteAll = jest.fn();
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 5));        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+
+            let bread: HTMLElement;            
+            await waitFor(() => {
+                bread = rend.getByText('bread');                
+            });          
+            
+            const deleteBreadButton = rend.getByRole('deleteItem');            
+            expect(deleteBreadButton).toBeInTheDocument();                
+        });
+
+        it("should not delete an item if the user refuse to delete the item", async () => {
+            appService.deleteAll = jest.fn();
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 5));        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+
+            let bread: HTMLElement;            
+            await waitFor(() => {
+                bread = rend.getByText('bread');                
+            });          
+            
+            const deleteBreadButton = rend.getByRole('deleteItem');
+            await fireEvent.click(deleteBreadButton);
+            let questionForm: HTMLElement;
+            await waitFor(() => {
+                questionForm = rend.getByRole('questionForm')
+                expect(questionForm).toBeInTheDocument();
+            });
+
+            const cancelButton = rend.getByText("Cancel");
+            await fireEvent.click(cancelButton);            
+            await waitFor(() => {
+                expect(bread).toBeInTheDocument();                
+            });
+        });
+
+        it("should delete an item if the user accept to delete the item", async () => {
+            appService.deleteAll = jest.fn();
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 5));        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+
+            let bread: HTMLElement;            
+            await waitFor(() => {
+                bread = rend.getByText('bread');                
+            });          
+            
+            const deleteBreadButton = rend.getByRole('deleteItem');
+            shoppingList = new Array<ShoppingListItem>();
+            await fireEvent.click(deleteBreadButton);
+            let questionForm: HTMLElement;
+            await waitFor(() => {
+                questionForm = rend.getByRole('questionForm')
+                expect(questionForm).toBeInTheDocument();
+            });
+
+            const acceptButton = rend.getByText("Accept");
+            await fireEvent.click(acceptButton);            
+            await waitFor(() => {
+                expect(bread).not.toBeInTheDocument();                
+            });
+        });
     });
 });

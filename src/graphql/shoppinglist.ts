@@ -23,3 +23,8 @@ export const MUTATION_DELETE_ALL = gql`
             deleteAll 
         }
         `
+export const MUTATION_DELETE_ITEM = gql`
+        mutation ($name:String!) {
+            deleteItem(name:$name)
+        }
+`

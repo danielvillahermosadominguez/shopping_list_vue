@@ -3,7 +3,7 @@ import { ApolloClient, DefaultOptions } from 'apollo-client'
 import 'cross-fetch/polyfill';
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory'
-import { QUERY_GET_ITEMS, MUTATION_ADD, MUTATION_DELETE_ALL } from '@/graphql/shoppinglist';
+import { QUERY_GET_ITEMS, MUTATION_ADD, MUTATION_DELETE_ALL, MUTATION_DELETE_ITEM } from '@/graphql/shoppinglist';
 
 export default class AppService {
   private apolloClient: ApolloClient<NormalizedCacheObject>;
@@ -65,9 +65,19 @@ export default class AppService {
     return result;
   }
 
-  public async deleteAll() {   
+  public async deleteAll() {
     await this.apolloClient.mutate({
       mutation: MUTATION_DELETE_ALL,
+    });
+  }
+
+  public async deleteItem(item: ShoppingListItem) {    
+    const name: string = item.name;
+    await this.apolloClient.mutate({
+      mutation: MUTATION_DELETE_ITEM,
+      variables: {
+        name
+      },
     });
   }
 

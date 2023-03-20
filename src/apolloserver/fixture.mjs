@@ -1,10 +1,7 @@
 import { gql, ApolloServer, UserInputError} from 'apollo-server'
 import { v1 as uuid } from 'uuid'
 
-const shoppingLists = [{
-    "name": "hola",
-    "quantity": 1    
-}]
+const shoppingLists = []
 
 const typeDefinitions = gql (`
     type ShoppingListItem {
@@ -22,9 +19,12 @@ const typeDefinitions = gql (`
             quantity:Int!       
         ): ShoppingListItem                  
 
-        deleteAll: Int!     
-    }
-    
+        deleteAll: Int!   
+        
+        deleteItem(
+            name: String!   
+        ):Int!
+    }    
 `)
 
 const resolvers = {
@@ -51,6 +51,15 @@ const resolvers = {
             const numberOfItems = shoppingLists.length;
             shoppingLists.length = 0;            
             return numberOfItems;
+        },
+        deleteItem: async (root, args) => {            
+            const index = await shoppingLists.findIndex(p=> p.name === args.name);
+            if( index !== -1) {                                
+                shoppingLists.splice(index,1);
+                return 1;
+            } 
+
+            return 0;
         }
     }
 }
