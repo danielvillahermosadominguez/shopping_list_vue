@@ -220,7 +220,7 @@ describe('Shopping list acceptance tests', () => {
     });
   })
 
-  it.skip(` Given a list with items
+  it(` Given a list with items
             When the user increase the quantity of an element
             Then the quantity is increased
   `, async () => {
@@ -230,15 +230,17 @@ describe('Shopping list acceptance tests', () => {
         appService: appService
       }
     });
-    await flushPromises();
+    
     await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();      
       expect(rend.getByText('5')).toBeInTheDocument();      
     });
 
-    const decreaseItemButton = rend.getByRole('decreaseQuantity');    
-    await fireEvent.click(decreaseItemButton);
-      
+    const increaseItemButton = rend.getByRole('increaseQuantity');    
+    await fireEvent.click(increaseItemButton);
+    
+    await flushPromises();
+
     await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();      
       expect(rend.getByText('6')).toBeInTheDocument();      
@@ -257,7 +259,7 @@ describe('Shopping list acceptance tests', () => {
         appService: appService
       }
     });
-    await flushPromises();    
+    
     await waitFor(() => {      
       expect(rend.getByText('bread')).toBeInTheDocument();              
       expect(rend.getByText('milk')).toBeInTheDocument();              
@@ -271,6 +273,8 @@ describe('Shopping list acceptance tests', () => {
     const acceptButton = rend.getByText('Accept');
     
     await fireEvent.click(acceptButton);
+
+    await flushPromises();    
 
     await waitFor(async () => {                        
       expect(rend.getByText('milk')).toBeInTheDocument();              

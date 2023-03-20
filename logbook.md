@@ -1,4 +1,4 @@
-# Tasks
+# Log book.
 
 05.03.2023
 
@@ -111,10 +111,11 @@ BUGS:
 
 20/03/2023
 - Implementation of delete one element
-- Implementation of update one element
-
+- Implementation of update one element: quantity + and -
 -Next steps are:         
+  - Implementation of update one element: name (the last basic feature and we have created the updated form). After this, we need to refactor and review all the problems.
   - Review and refactor of the test and code.
+  - Review every flaky tests: we have a lot.
   - to get a new feature: The user can decrease and increment a selected item
   - Writing the readme and conclusions after the first feature.  + remember to include:
     - flush
@@ -123,8 +124,10 @@ BUGS:
   - ViewModel pattern.
   - Login
 
-BUGS:
+BUGS/PROBLEMS:
+- Strange configuration of the test in tsconfig. Something is wrong. Why we need to include  "tests/component/ShoppingList.vue" ? If i remove it
+  tests are not working. Review it. In addition, I cannot, create other test in the same folder. It must be a problem of configuration.
 - CI = The first time I execute acceptance tests they fail.
-    - We have several flaky tests. We should review them
+    - We have several flaky tests. We should review them (too much flaky tests)
 - UI = the HTML elements change their size. To improve for better experience
 - UI = About page is not working
