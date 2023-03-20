@@ -406,4 +406,147 @@ describe('Shopping list', () => {
             });
         });
     });
+
+    describe("items are updated", () => {
+        it("should have a button to decrease the quantity but disable if the quantity is 1", async () => {
+            const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 1));                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+            let bread: HTMLElement;            
+            await waitFor(() => {
+                bread = rend.getByText('bread');                
+            });   
+
+            const decreaseItemButton = rend.getByRole('decreaseQuantity');                
+            expect(decreaseItemButton).toBeInTheDocument();
+            expect(decreaseItemButton).toBeDisabled();
+        });
+
+        it("should have a button to decrease the quantity but disable if the quantity is >1", async () => {
+            const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 2));                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+            let bread: HTMLElement;            
+            await waitFor(() => {
+                bread = rend.getByText('bread');                
+            });   
+
+            const decreaseItemButton = rend.getByRole('decreaseQuantity');                
+            expect(decreaseItemButton).toBeInTheDocument();
+            expect(decreaseItemButton).toBeEnabled();
+        });
+
+        it("should have a button to increase the quantity", async () => {
+            const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 1));                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+            let bread: HTMLElement;            
+            await waitFor(() => {
+                bread = rend.getByText('bread');                
+            });   
+
+            const increaseItemButton = rend.getByRole('increaseQuantity');                
+            expect(increaseItemButton).toBeInTheDocument();
+            expect(increaseItemButton).toBeEnabled();
+        });
+
+        it("should increase the quantity when the + button is clicked", async () => {
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 5));                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            appService.updateItem = jest.fn(async (item:ShoppingListItem) => new Promise( (resolve) => {                
+                shoppingList = [];
+                const updatedItem = new ShoppingListItem(item.name, item.quantity)
+                shoppingList.push(updatedItem);
+                resolve ();
+                return updatedItem;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });           
+
+            await waitFor(() => {
+                expect(rend.getByText('bread')).toBeInTheDocument();                
+                expect(rend.getByText('5')).toBeInTheDocument();                
+            });   
+
+            const increaseItemButton = rend.getByRole('increaseQuantity');                
+            await fireEvent.click(increaseItemButton);            
+            
+            await waitFor(() => {
+                expect(rend.getByText('bread')).toBeInTheDocument();                
+                expect(rend.getByText('6')).toBeInTheDocument();                
+            });   
+        });
+
+        it("should decrease the quantity when the + button is clicked", async () => {
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 5));                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            appService.updateItem = jest.fn(async (item:ShoppingListItem) => new Promise( (resolve) => {                
+                shoppingList = [];
+                const updatedItem = new ShoppingListItem(item.name, item.quantity)
+                shoppingList.push(updatedItem);
+                resolve ();
+                return updatedItem;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });           
+
+            await waitFor(() => {
+                expect(rend.getByText('bread')).toBeInTheDocument();                
+                expect(rend.getByText('5')).toBeInTheDocument();                
+            });   
+
+            const decreaseItemButton = rend.getByRole('decreaseQuantity');                
+            await fireEvent.click(decreaseItemButton);            
+            
+            await waitFor(() => {
+                expect(rend.getByText('bread')).toBeInTheDocument();                
+                expect(rend.getByText('4')).toBeInTheDocument();                
+            });   
+        });
+    });
 });

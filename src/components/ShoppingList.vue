@@ -3,13 +3,15 @@
         <form>
             <div style="float:left;margin-right:20px;">
                 <label for="input_text">
-                    Please, write the name of the item:                    
+                    Please, write the name of the item:
                     <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" />
                 </label>
-                
+
                 <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
-                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">delete all items</button>
-                <ContinueQuestion role = "questionForm" v-if="showModal" header="" :question="modalMessage" @ok="executeAction(action)" @cancel="cancelLastAction()"> </ContinueQuestion>
+                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">delete all
+                    items</button>
+                <ContinueQuestion role="questionForm" v-if="showModal" header="" :question="modalMessage"
+                    @ok="executeAction()" @cancel="cancelLastAction()"> </ContinueQuestion>
                 <br>
                 <p v-if="error !== ''" class="error">{{ error }}</p>
                 <p class="info" v-else>For example: Jam</p>
@@ -17,10 +19,7 @@
                 <h1>Your shopping list</h1>
                 <table role="itemList" class="table">
                     <thead>
-                        <tr class="tr">
-                            <th>
-                                Nº
-                            </th>
+                        <tr class="tr">                            
                             <th>
                                 Item
                             </th>
@@ -33,20 +32,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in listItems" v-bind="listItems" :key="index">                            
+                        <tr v-for="(item, index) in listItems" v-bind="listItems" :key="index">
                             <td>{{ item.name }}</td>
                             <td>{{ item.quantity }}</td>
                             <td>
-                                <button role="deleteItem" v-on:click="askToDeleteOne(item)"> 
-                                    <img src="@/assets/deleteItem.png" heigth="16px" width="16px">
-                                </button>
+                                <button role="increaseQuantity" @click="increaseItem(item, 1)">+</button>
+                                <button role="decreaseQuantity" :disabled="item.quantity<=1" @click="increaseItem(item,-1)">-</button>
+                                <button role="deleteItem" v-on:click="askToDeleteOne(item)">
+                                    <img src="@/assets/deleteItem.png" heigth="10px" width="10px">
+                                </button>                            
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-        </form>       
+        </form>
     </div>
 </template>
 
@@ -55,7 +56,6 @@ import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
 import ContinueQuestion from './ContinueQuestion.vue';
-import { MUTATION_DELETE_ALL } from '@/graphql/shoppinglist';
 const emptyShoppingItem = new ShoppingListItem();
 export default defineComponent({
     name: "ShoppingList",
@@ -69,9 +69,9 @@ export default defineComponent({
             lastAdded: emptyShoppingItem as ShoppingListItem,
             error: '',
             showModal: false,
-            modalMessage:'',
-            action:'',
-            actionArgument:undefined as ShoppingListItem|undefined,
+            modalMessage: '',
+            action: '',
+            actionArgument: undefined as ShoppingListItem | undefined,
         };
     },
     mounted() {
@@ -99,7 +99,7 @@ export default defineComponent({
             this.action = "deleteAll";
             this.showModal = true;
         },
-        askToDeleteOne(item:ShoppingListItem) {
+        askToDeleteOne(item: ShoppingListItem) {
             this.modalMessage = `You are going to remove the item ${item.name}. Are you sure?`;
             this.action = "deleteSelectedItem";
             this.actionArgument = item;
@@ -121,35 +121,44 @@ export default defineComponent({
         deleteAll() {
             if (this.appService !== undefined) {
                 this.appService.deleteAll();
-                this.refreshList();             
-            }            
+                this.refreshList();
+            }
         },
-        deleteItem(item:ShoppingListItem) {
+        deleteItem(item: ShoppingListItem) {
             if (this.appService !== undefined) {
                 this.appService.deleteItem(item);
-                this.refreshList();             
-            }    
+                this.refreshList();
+            }
         },
-        isValidInput(): boolean {
-            this.$data.error = "";
+        increaseItem(item:ShoppingListItem,increment:number) {            
+            if (this.appService !== undefined) {                
+                const updatedItem = new ShoppingListItem(item.name, item.quantity+increment);                                
+                updatedItem.id = item.id;
+                this.appService.updateItem(updatedItem);
+                this.refreshList();
+            }
+        },
+        isValidInput(): boolean {            
             const text = this.$data.inputValue;
             if (text === "") {
+                this.$data.error = "";
                 return false;
             }
             const regex = new RegExp("^[A-Za-z0-9].");
             if (!regex.test(text)) {
                 this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
                 return false;
-            }
+            } 
+            this.$data.error = "";
             return true;
         },
         canIDeleteAtLeastOne(): boolean {
-            const variable = this.listItems.length > 0;            
+            const variable = this.listItems.length > 0;
             return variable;
         },
         refreshList() {
             if (this.appService) {
-                this.appService.getItems().then(items => {                    
+                this.appService.getItems().then(items => {
                     this.listItems = items;
                 });
             }
@@ -178,9 +187,10 @@ body {
     color: #00529B;
     font-size: 12px;
 }
+
 .info2 {
     color: #FFFF;
-    background-color: #00529B;    
+    background-color: #00529B;
     font-size: 12px;
     background-image: url('https://i.imgur.com/Q9BGTuy.png');
 }
@@ -257,4 +267,12 @@ input {
     font-size: 14px;
     font-weight: 600;
     width: 300px;
-}</style>
+}
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+</style>

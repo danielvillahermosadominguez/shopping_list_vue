@@ -5,6 +5,7 @@ const shoppingLists = []
 
 const typeDefinitions = gql (`
     type ShoppingListItem {
+        id: String!
         name: String!
         quantity: Int!
     }
@@ -14,15 +15,22 @@ const typeDefinitions = gql (`
     }
 
     type Mutation {
-        add(
+        add(           
+            id: String! 
             name: String!   
             quantity:Int!       
         ): ShoppingListItem                  
 
+        update(
+            id:String!
+            name: String!   
+            quantity:Int!       
+        ): ShoppingListItem 
+
         deleteAll: Int!   
         
         deleteItem(
-            name: String!   
+            id: String!
         ):Int!
     }    
 `)
@@ -36,15 +44,37 @@ const resolvers = {
     },
 
     Mutation: {
-        add: async (root, args) => {                                    
-            const itemFound = await shoppingLists.find(p=> p.name === args.name);
+        add: async (root, args) => {                             
             let item = {...args}             
-            if(itemFound === undefined) {                                
+            let itemFound = undefined;
+            console.log("add an item");            
+            if(item.id !=='') {
+                itemFound = await shoppingLists.find(p=> p.id === item.id);                                
+            }
+
+            if(itemFound === undefined) {           
+                item.id = uuid();                                                         
                 shoppingLists.push(item)            
                 return item;
             } 
             
-            itemFound.quantity+= item.quantity;                                
+            itemFound.quantity+= 1;                                
+            return itemFound;
+        },
+        update: async (root, args) => {                
+            let item = {...args}           
+            console.log("ESTOY AQUI quantity = "+ item.quantity);  
+            let itemFound = undefined;
+            if(item.id !=='') {
+                itemFound = await shoppingLists.find(p=> p.id === item.id);                                
+            }
+
+            if(itemFound === undefined) {           
+                throw Error("You need to include a correct id. The id '"+item.id+"' is not related to an item");
+            } 
+            
+            itemFound.quantity = item.quantity;                                
+            itemFound.name = item.name;                                
             return itemFound;
         },
         deleteAll: (root) => {
@@ -53,7 +83,7 @@ const resolvers = {
             return numberOfItems;
         },
         deleteItem: async (root, args) => {            
-            const index = await shoppingLists.findIndex(p=> p.name === args.name);
+            const index = await shoppingLists.findIndex(p=> p.id === args.id);
             if( index !== -1) {                                
                 shoppingLists.splice(index,1);
                 return 1;
