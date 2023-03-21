@@ -88,7 +88,10 @@ export default class AppService {
   public async updateItem(item: ShoppingListItem) {        
     const id: string = item.id;
     const name: string = item.name;
-    const quantity: number = item.quantity;    
+    const quantity: number = item.quantity; 
+    console.log("id=" + id)   ;
+    console.log("name=" + name)   ;
+    console.log("quantity=" + quantity)   ;
     await this.apolloClient.mutate({
       mutation: MUTATION_UPDATE,
       variables: {
@@ -96,7 +99,7 @@ export default class AppService {
         name,
         quantity
       },
-    });        
+    });           
   }
 
   public async serverIsReady(): Promise<boolean> {

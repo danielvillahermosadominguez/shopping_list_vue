@@ -1,24 +1,24 @@
 <template>
-    <transition name="modaledit">
+    <transition name="modal">
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
                     <div class="modal-header">
-                        {{ header }}
-                    </div>
+                        {{ header }}                    
+                    </div>      
                     <div class="modal-body">
-                        <label>
+                        <label>                      
                             Please, update the name of the item:
-                            <input id="update_name" type="text" role="nameInput" v-model="updatedItem.name" />
+                            <input id="update_name" type="text" role="nameInput" />
                         </label>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="modal-button" @click="$emit('ok', $event, updatedItem)">
+                    </div>              
+                    <div class="modal-footer">                        
+                        <button  class="modal-button" @click="$emit('ok')">
                             Accept
                         </button>
                         <button class="modal-button" @click="$emit('cancel')">
                             Cancel
-                        </button>
+                        </button>                    
                     </div>
                 </div>
 
@@ -32,22 +32,10 @@
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
 export default defineComponent({
-    name: 'UpdateItemForm',
+    name: 'ChangeParametersItem',
     props: {
-        header: String,
+        header: String,        
         item: ShoppingListItem,
-    },
-    data() {
-        return {
-            updatedItem: new ShoppingListItem() as ShoppingListItem
-        }
-    },
-    mounted() {
-        if (this.item !== undefined) {
-            this.updatedItem.name = this.item.name;
-            this.updatedItem.quantity = this.item.quantity;
-            this.updatedItem.id = this.item.id;
-        }
     }
 });
 </script>

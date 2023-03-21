@@ -548,5 +548,51 @@ describe('Shopping list', () => {
                 expect(rend.getByText('4')).toBeInTheDocument();                
             });   
         });
+
+        it("should change the name when the edit button is clicked", async () => {
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            const item = new ShoppingListItem("bread", 5);
+            item.id ="1";
+            shoppingList.push(item);                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            appService.updateItem = jest.fn(async (item:ShoppingListItem) => new Promise( (resolve) => {                
+                shoppingList = [];
+                const updatedItem = new ShoppingListItem(item.name, item.quantity)
+                updatedItem.id =item.id;
+                shoppingList.push(updatedItem);
+                resolve ();
+                return updatedItem;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });           
+
+            await waitFor(() => {
+                expect(rend.getByText('bread')).toBeInTheDocument();                
+                expect(rend.getByText('5')).toBeInTheDocument();                
+            });   
+
+            let editItemButton = rend.getByRole('editItem');                
+            await fireEvent.click(editItemButton);            
+            
+            let inputEdit = rend.getByRole('nameInput');    
+            await fireEvent.input(inputEdit, { target: { value: 'milk' } });
+            
+            await flushPromises();          
+            let acceptButton = rend.getByText("Accept");
+            await fireEvent.click(acceptButton);                
+
+            await waitFor(() => {
+                expect(rend.getByText('milk')).toBeInTheDocument();                
+                expect(rend.getByText('5')).toBeInTheDocument();                
+            });   
+        });
     });
 });

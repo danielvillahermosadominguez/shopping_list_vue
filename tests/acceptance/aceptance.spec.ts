@@ -91,17 +91,11 @@ describe('Shopping list acceptance tests', () => {
         appService: appService
       }
     });
-    await flushPromises();
-    let bread: HTMLHtmlElement;
-    let milk: HTMLHtmlElement;
-    let carrots: HTMLHtmlElement;
-    await waitFor(() => {
-      bread = rend.getByText('bread');
-      milk = rend.getByText('milk');
-      carrots = rend.getByText('carrots');
-      expect(bread).toBeInTheDocument();
-      expect(milk).toBeInTheDocument();
-      expect(carrots).toBeInTheDocument();
+    await flushPromises();    
+    await waitFor(() => {      
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('milk')).toBeInTheDocument();
+      expect(rend.getByText('carrots')).toBeInTheDocument();
     });
 
     const deleteAllButton = rend.getByRole('deleteAllButton');
@@ -111,11 +105,10 @@ describe('Shopping list acceptance tests', () => {
 
     await fireEvent.click(refuseDeleteAll);
 
-    await waitFor(() => {
-      expect(bread).toBeInTheDocument();
-      expect(bread).toBeInTheDocument();
-      expect(bread).toBeInTheDocument();
-      expect(deleteAllButton).toBeEnabled();
+    await waitFor(() => {      
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('milk')).toBeInTheDocument();
+      expect(rend.getByText('carrots')).toBeInTheDocument();
     });
   })
 

@@ -1,17 +1,18 @@
 <template @new-item_has_been-added="refreshList()">
-    <div class="hello">
+    <div class="hello">        
         <form>
             <div style="float:left;margin-right:20px;">
                 <label for="input_text">
                     Please, write the name of the item:
                     <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" />
-                </label>
-
+                </label>                
                 <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
                 <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">delete all
                     items</button>
-                <ContinueQuestion role="questionForm" v-if="showModal" header="" :question="modalMessage"
-                    @ok="executeAction()" @cancel="cancelLastAction()"> </ContinueQuestion>
+                <ContinueQuestion id="questionForm" role="questionForm" v-if="showModal" header="" :question="modalMessage"
+                    @ok="executeAction($event)" @cancel="cancelLastAction()"> </ContinueQuestion>                                
+                <UpdateItemForm id="questionForm2" role="questionForm2" v-if="showEdit" header="" :item="actionArgument"
+                    @ok="($event,args) => executeAction($event,args)" @cancel="cancelLastAction()"> </UpdateItemForm> 
                 <br>
                 <p v-if="error !== ''" class="error">{{ error }}</p>
                 <p class="info" v-else>For example: Jam</p>
@@ -19,7 +20,7 @@
                 <h1>Your shopping list</h1>
                 <table role="itemList" class="table">
                     <thead>
-                        <tr class="tr">                            
+                        <tr class="tr">                           
                             <th>
                                 Item
                             </th>
@@ -32,15 +33,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in listItems" v-bind="listItems" :key="index">
+                        <tr v-for="(item, index) in listItems" v-bind="listItems" :key="index">                            
                             <td>{{ item.name }}</td>
                             <td>{{ item.quantity }}</td>
                             <td>
                                 <button role="increaseQuantity" @click="increaseItem(item, 1)">+</button>
-                                <button role="decreaseQuantity" :disabled="item.quantity<=1" @click="increaseItem(item,-1)">-</button>
+                                <button role="decreaseQuantity" :disabled="item.quantity <= 1"
+                                    @click="increaseItem(item, -1)">-</button>
+                                <button role="editItem" @click="askToEditItem(item)">
+                                    <img src="@/assets/edit.png" heigth="10px" width="10px">
+                                </button>
                                 <button role="deleteItem" v-on:click="askToDeleteOne(item)">
                                     <img src="@/assets/deleteItem.png" heigth="10px" width="10px">
-                                </button>                            
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -56,6 +61,7 @@ import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
 import ContinueQuestion from './ContinueQuestion.vue';
+import UpdateItemForm from './UpdateItemForm.vue';
 const emptyShoppingItem = new ShoppingListItem();
 export default defineComponent({
     name: "ShoppingList",
@@ -69,12 +75,13 @@ export default defineComponent({
             lastAdded: emptyShoppingItem as ShoppingListItem,
             error: '',
             showModal: false,
+            showEdit: false,
             modalMessage: '',
             action: '',
             actionArgument: undefined as ShoppingListItem | undefined,
         };
     },
-    mounted() {
+    mounted() {        
         this.refreshList();
     },
     watch: {
@@ -82,7 +89,7 @@ export default defineComponent({
             this.refreshList();
         }
     },
-    methods: {
+    methods: {      
         addItem() {
             const item = new ShoppingListItem();
             item.name = this.$data.inputValue;
@@ -94,27 +101,36 @@ export default defineComponent({
                 });
             }
         },
+        askToEditItem(item: ShoppingListItem) {            
+            this.action = "editItem";            
+            this.actionArgument = item;
+            this.showEdit = true;
+        },
         askToDeleteAll() {
             this.modalMessage = "You are going to delete all the items. Are you sure?";
             this.action = "deleteAll";
             this.showModal = true;
         },
-        askToDeleteOne(item: ShoppingListItem) {
+        askToDeleteOne(item: ShoppingListItem) {            
             this.modalMessage = `You are going to remove the item ${item.name}. Are you sure?`;
             this.action = "deleteSelectedItem";
             this.actionArgument = item;
             this.showModal = true;
         },
-        cancelLastAction() {
+        cancelLastAction() {            
             this.modalMessage = '';
             this.action = '';
             this.showModal = false;
+            this.showEdit = false;
+            this.actionArgument = undefined;
         },
-        executeAction() {
+        executeAction(event: Event, updatedItem: ShoppingListItem | undefined = undefined) {            
             if (this.action === 'deleteAll') {
                 this.deleteAll();
             } else if ((this.action === 'deleteSelectedItem') && (this.actionArgument !== undefined)) {
                 this.deleteItem(this.actionArgument);
+            } else if ((this.action === 'editItem') && (updatedItem !== undefined)) {                
+                this.updateItem(updatedItem);
             }
             this.cancelLastAction();
         },
@@ -130,15 +146,21 @@ export default defineComponent({
                 this.refreshList();
             }
         },
-        increaseItem(item:ShoppingListItem,increment:number) {            
-            if (this.appService !== undefined) {                
-                const updatedItem = new ShoppingListItem(item.name, item.quantity+increment);                                
+        updateItem(item: ShoppingListItem) {
+            if (this.appService !== undefined) {
+                this.appService.updateItem(item);
+                this.refreshList();
+            }
+        },
+        increaseItem(item: ShoppingListItem, increment: number) {
+            if (this.appService !== undefined) {
+                const updatedItem = new ShoppingListItem(item.name, item.quantity + increment);
                 updatedItem.id = item.id;
                 this.appService.updateItem(updatedItem);
                 this.refreshList();
             }
         },
-        isValidInput(): boolean {            
+        isValidInput(): boolean {
             const text = this.$data.inputValue;
             if (text === "") {
                 this.$data.error = "";
@@ -148,7 +170,7 @@ export default defineComponent({
             if (!regex.test(text)) {
                 this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
                 return false;
-            } 
+            }
             this.$data.error = "";
             return true;
         },
@@ -156,7 +178,7 @@ export default defineComponent({
             const variable = this.listItems.length > 0;
             return variable;
         },
-        refreshList() {
+        refreshList() {            
             if (this.appService) {
                 this.appService.getItems().then(items => {
                     this.listItems = items;
@@ -164,7 +186,7 @@ export default defineComponent({
             }
         }
     },
-    components: { ContinueQuestion }
+    components: { ContinueQuestion , UpdateItemForm}
 });
 </script>
 <style>
@@ -268,11 +290,11 @@ input {
     font-weight: 600;
     width: 300px;
 }
-button:disabled,
-button[disabled]{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
 
+button:disabled,
+button[disabled] {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+}
 </style>
