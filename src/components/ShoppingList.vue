@@ -62,6 +62,7 @@ import ShoppingListItem from '@/appservices/ShoppingListItem';
 import { defineComponent } from 'vue';
 import ContinueQuestion from './ContinueQuestion.vue';
 import UpdateItemForm from './UpdateItemForm.vue';
+import NameValidator from '@/validators/namevalidator';
 const emptyShoppingItem = new ShoppingListItem();
 export default defineComponent({
     name: "ShoppingList",
@@ -79,6 +80,7 @@ export default defineComponent({
             modalMessage: '',
             action: '',
             actionArgument: undefined as ShoppingListItem | undefined,
+            validator: new NameValidator() as NameValidator
         };
     },
     mounted() {        
@@ -161,16 +163,16 @@ export default defineComponent({
             }
         },
         isValidInput(): boolean {
-            const text = this.$data.inputValue;
-            if (text === "") {
+            const result:boolean|undefined = this.validator.check(this.$data.inputValue);            
+            if (result === undefined) {
                 this.$data.error = "";
                 return false;
-            }
-            const regex = new RegExp("^[A-Za-z0-9].");
-            if (!regex.test(text)) {
+            } 
+
+            if(!result) {
                 this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
                 return false;
-            }
+            }            
             this.$data.error = "";
             return true;
         },

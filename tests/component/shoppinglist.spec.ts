@@ -594,5 +594,48 @@ describe('Shopping list', () => {
                 expect(rend.getByText('5')).toBeInTheDocument();                
             });   
         });
+
+        it("should not be able to change the name when the name don't match with the validation", async () => {
+            let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            const item = new ShoppingListItem("bread", 5);
+            item.id ="1";
+            shoppingList.push(item);                        
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            appService.updateItem = jest.fn(async (item:ShoppingListItem) => new Promise( (resolve) => {                
+                shoppingList = [];
+                const updatedItem = new ShoppingListItem(item.name, item.quantity)
+                updatedItem.id =item.id;
+                shoppingList.push(updatedItem);
+                resolve ();
+                return updatedItem;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });           
+
+            await waitFor(() => {
+                expect(rend.getByText('bread')).toBeInTheDocument();                
+                expect(rend.getByText('5')).toBeInTheDocument();                
+            });   
+
+            let editItemButton = rend.getByRole('editItem');                
+            await fireEvent.click(editItemButton);            
+            
+            let inputEdit = rend.getByRole('nameInput');    
+            await fireEvent.input(inputEdit, { target: { value: '2' } });
+            
+            
+            let acceptButton = rend.getByText("Accept");
+            
+            expect(acceptButton).toBeDisabled();
+            expect(rend.getByText("The text must start with A-Z, a-z or a number but no spaces before the first character")).toBeInTheDocument();
+        });
     });
 });

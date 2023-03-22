@@ -153,3 +153,25 @@ BUGS/PROBLEMS:
     - We have several flaky tests. We should review them (too much flaky tests)
 - UI = the HTML elements change their size. To improve for better experience
 - UI = About page is not working
+
+22/03/2023
+
+- include the validation of the name in the edition
+- Remove ChangeParametersItem.vue
+
+-Next steps are:          
+  - Review and refactor of the test and code.
+  - Review every flaky tests: we have a some of them.  
+  - Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush
+  - Common styles for all the application
+- Parking lot:
+  - ViewModel pattern.
+  - Login
+
+BUGS/PROBLEMS:
+-  tests are not working. Review it. In addition, I cannot, create other test in the same folder. It must be a problem of configuration.
+- CI = The first time I execute acceptance tests they fail.
+    - We have several flaky tests. We should review them (too much flaky tests)
+- UI = the HTML elements change their size. To improve for better experience
+- UI = About page is not working
