@@ -4,7 +4,7 @@
             <div style="float:left;margin-right:20px;">
                 <label for="input_text">
                     Please, write the name of the item:
-                    <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" />
+                    <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" data-error="hola" required/>
                 </label>                
                 <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
                 <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">delete all
@@ -14,9 +14,11 @@
                 <UpdateItemForm id="questionForm2" role="questionForm2" v-if="showEdit" header="" :item="actionArgument"
                     @ok="($event,args) => executeAction($event,args)" @cancel="cancelLastAction()"> </UpdateItemForm> 
                 <br>
-                <p v-if="error !== ''" class="error">{{ error }}</p>
-                <p class="info" v-else>For example: Jam</p>
-                <br />
+                <div>
+                    <p v-if="error !== ''" class="error">{{ error }}</p>
+                    <p v-else class="info" >For example: Jam</p>
+                    <br />
+                </div>
                 <h1>Your shopping list</h1>
                 <table role="itemList" class="table">
                     <thead>
@@ -233,7 +235,9 @@ body {
 
 .error {
     color: #D8000C;
-    font-size: 12px;
+    font-size: 10px;
+    overflow-wrap: break-spaces; 
+    inline-size: 100px;    
 }
 
 .validation {
@@ -298,5 +302,11 @@ button[disabled] {
     border: 1px solid #999999;
     background-color: #cccccc;
     color: #666666;
+}
+p {
+     font-size: "8px";
+     width: 250px;
+     white-space: nowrap;     
+     text-overflow: ellipsis;
 }
 </style>

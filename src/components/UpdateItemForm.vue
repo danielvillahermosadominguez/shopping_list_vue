@@ -10,7 +10,12 @@
                         <label>
                             Please, update the name of the item:
                             <input id="update_name" type="text" role="nameInput" v-model="updatedItem.name" />
-                            <p v-if="error !== ''" class="error">{{ error }}</p>
+                            <br>
+                            <div>
+                                <p v-if="error !== ''" class="error">{{ error }}</p>
+                                <p v-else class="info">For example: Jam</p>
+                                <br />
+                            </div>
                         </label>
                     </div>
                     <div class="modal-footer">
@@ -43,7 +48,7 @@ export default defineComponent({
         return {
             updatedItem: new ShoppingListItem() as ShoppingListItem,
             validator: new NameValidator() as NameValidator,
-            error:'' as string
+            error: '' as string
         }
     },
     mounted() {
@@ -52,19 +57,19 @@ export default defineComponent({
             this.updatedItem.quantity = this.item.quantity;
             this.updatedItem.id = this.item.id;
         }
-    }, 
+    },
     methods: {
         isValidInput(): boolean {
-            const result:boolean|undefined = this.validator.check(this.$data.updatedItem.name);            
+            const result: boolean | undefined = this.validator.check(this.$data.updatedItem.name);
             if (result === undefined) {
                 this.$data.error = "";
                 return false;
-            } 
+            }
 
-            if(!result) {
+            if (!result) {
                 this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
                 return false;
-            }            
+            }
             this.$data.error = "";
             return true;
         },
@@ -127,4 +132,5 @@ export default defineComponent({
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
+
 </style>
