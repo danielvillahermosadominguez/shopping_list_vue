@@ -1,7 +1,4 @@
 
-import HelloWorld from './components/HelloWorld.vue';
-
-
 import ShoppingList from './components/ShoppingList.vue';
 
 <template>
@@ -10,7 +7,7 @@ import ShoppingList from './components/ShoppingList.vue';
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </nav>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 <style>

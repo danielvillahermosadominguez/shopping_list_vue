@@ -53,7 +53,7 @@ describe('Shopping list acceptance tests', () => {
       expect(rend.getByText('1')).toBeInTheDocument();
     });
   })
-  
+
   it(`Given a list with elements
   When the user add a new one element with a wrong format
   Then this element cannot be included in the list`, async () => {
@@ -91,8 +91,8 @@ describe('Shopping list acceptance tests', () => {
         appService: appService
       }
     });
-    await flushPromises();    
-    await waitFor(() => {      
+    await flushPromises();
+    await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();
       expect(rend.getByText('milk')).toBeInTheDocument();
       expect(rend.getByText('carrots')).toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('Shopping list acceptance tests', () => {
 
     await fireEvent.click(refuseDeleteAll);
 
-    await waitFor(() => {      
+    await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();
       expect(rend.getByText('milk')).toBeInTheDocument();
       expect(rend.getByText('carrots')).toBeInTheDocument();
@@ -192,7 +192,7 @@ describe('Shopping list acceptance tests', () => {
             When the user decrease the quantity of an element
             Then the quantity is decreased
   `, async () => {
-    appService.add(new ShoppingListItem('bread', 5));    
+    appService.add(new ShoppingListItem('bread', 5));
     const rend = render(HomeView, {
       props: {
         appService: appService
@@ -200,16 +200,16 @@ describe('Shopping list acceptance tests', () => {
     });
     await flushPromises();
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();      
-      expect(rend.getByText('5')).toBeInTheDocument();      
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('5')).toBeInTheDocument();
     });
 
-    const decreaseItemButton = rend.getByRole('decreaseQuantity');    
+    const decreaseItemButton = rend.getByRole('decreaseQuantity');
     await fireEvent.click(decreaseItemButton);
-      
+
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();      
-      expect(rend.getByText('4')).toBeInTheDocument();      
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('4')).toBeInTheDocument();
     });
   })
 
@@ -217,26 +217,26 @@ describe('Shopping list acceptance tests', () => {
             When the user increase the quantity of an element
             Then the quantity is increased
   `, async () => {
-    appService.add(new ShoppingListItem('bread', 5));    
+    appService.add(new ShoppingListItem('bread', 5));
     const rend = render(HomeView, {
       props: {
         appService: appService
       }
     });
-    
+
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();      
-      expect(rend.getByText('5')).toBeInTheDocument();      
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('5')).toBeInTheDocument();
     });
 
-    const increaseItemButton = rend.getByRole('increaseQuantity');    
+    const increaseItemButton = rend.getByRole('increaseQuantity');
     await fireEvent.click(increaseItemButton);
-    
+
     await flushPromises();
 
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();      
-      expect(rend.getByText('6')).toBeInTheDocument();      
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('6')).toBeInTheDocument();
     });
   })
 
@@ -252,28 +252,27 @@ describe('Shopping list acceptance tests', () => {
         appService: appService
       }
     });
-    
-    await waitFor(() => {      
-      expect(rend.getByText('bread')).toBeInTheDocument();              
-      expect(rend.getByText('milk')).toBeInTheDocument();              
-      expect(rend.getByText('carrots')).toBeInTheDocument();              
+
+    await waitFor(() => {
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('milk')).toBeInTheDocument();
+      expect(rend.getByText('carrots')).toBeInTheDocument();
     });
 
-    const deleteItemButtons = rend.getAllByRole('deleteItem');            
+    const deleteItemButtons = rend.getAllByRole('deleteItem');
     const deleteBreadButton = deleteItemButtons[0];
     await fireEvent.click(deleteBreadButton);
-    expect(rend.getByRole('questionForm')).toBeInTheDocument();            
+    expect(rend.getByRole('questionForm')).toBeInTheDocument();
     const acceptButton = rend.getByText('Accept');
-    
+
     await fireEvent.click(acceptButton);
 
-    await flushPromises();    
+    await flushPromises();
 
-    await waitFor(async () => {                        
-      expect(rend.getByText('milk')).toBeInTheDocument();              
+    await waitFor(async () => {
+      expect(rend.getByText('milk')).toBeInTheDocument();
       expect(rend.getByText('carrots')).toBeInTheDocument();
       expect(await rend.queryByText('bread')).toBeNull();
     });
   })
-
 });

@@ -45,6 +45,7 @@ const resolvers = {
 
     Mutation: {
         add: async (root, args) => {                             
+            console.log("add an item");  
             let item = {...args}             
             let itemFound = undefined;
             console.log("add an item");            
@@ -63,7 +64,7 @@ const resolvers = {
         },
         update: async (root, args) => {                
             let item = {...args}           
-            console.log("ESTOY AQUI quantity = "+ item.quantity);  
+            console.log("update item");  
             let itemFound = undefined;
             if(item.id !=='') {
                 itemFound = await shoppingLists.find(p=> p.id === item.id);                                
@@ -78,11 +79,13 @@ const resolvers = {
             return itemFound;
         },
         deleteAll: (root) => {
+            console.log("delete all");  
             const numberOfItems = shoppingLists.length;
             shoppingLists.length = 0;            
             return numberOfItems;
         },
         deleteItem: async (root, args) => {            
+            console.log("delete item");  
             const index = await shoppingLists.findIndex(p=> p.id === args.id);
             if( index !== -1) {                                
                 shoppingLists.splice(index,1);

@@ -3,7 +3,7 @@ import { ApolloClient, DefaultOptions } from 'apollo-client'
 import 'cross-fetch/polyfill';
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory'
-import { QUERY_GET_ITEMS, MUTATION_ADD, MUTATION_DELETE_ALL, MUTATION_DELETE_ITEM,MUTATION_UPDATE } from '@/graphql/shoppinglist';
+import { QUERY_GET_ITEMS, MUTATION_ADD, MUTATION_DELETE_ALL, MUTATION_DELETE_ITEM, MUTATION_UPDATE } from '@/graphql/shoppinglist';
 
 export default class AppService {
   private apolloClient: ApolloClient<NormalizedCacheObject>;
@@ -35,18 +35,14 @@ export default class AppService {
   }
 
   public async add(item: ShoppingListItem) {
-    await this.addAux(item);
-  }
-
-  private async addAux(item: ShoppingListItem) {    
     const id: string = item.id;
     const name: string = item.name;
     const quantity: number = item.quantity;
     await this.apolloClient.mutate({
       mutation: MUTATION_ADD,
       variables: {
-        id, 
-        name, 
+        id,
+        name,
         quantity
       },
     });
@@ -60,9 +56,9 @@ export default class AppService {
     });
 
     const { items } = data;
-    items.forEach((element: { id:string; name: string | undefined; quantity: number | undefined; }) => {
+    items.forEach((element: { id: string; name: string | undefined; quantity: number | undefined; }) => {
       const item = new ShoppingListItem(element.name, element.quantity);
-      item.id =element.id;
+      item.id = element.id;
       result.push(item);
     });
 
@@ -75,7 +71,7 @@ export default class AppService {
     });
   }
 
-  public async deleteItem(item: ShoppingListItem) {    
+  public async deleteItem(item: ShoppingListItem) {
     const id: string = item.id;
     await this.apolloClient.mutate({
       mutation: MUTATION_DELETE_ITEM,
@@ -85,13 +81,10 @@ export default class AppService {
     });
   }
 
-  public async updateItem(item: ShoppingListItem) {        
+  public async updateItem(item: ShoppingListItem) {
     const id: string = item.id;
     const name: string = item.name;
-    const quantity: number = item.quantity; 
-    console.log("id=" + id)   ;
-    console.log("name=" + name)   ;
-    console.log("quantity=" + quantity)   ;
+    const quantity: number = item.quantity;   
     await this.apolloClient.mutate({
       mutation: MUTATION_UPDATE,
       variables: {
@@ -99,7 +92,7 @@ export default class AppService {
         name,
         quantity
       },
-    });           
+    });
   }
 
   public async serverIsReady(): Promise<boolean> {

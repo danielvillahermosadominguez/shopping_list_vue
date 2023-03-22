@@ -7,7 +7,6 @@ Vue.config.productionTip = false
 Vue.component("ShoppingList", ShoppingList);
 
 new Vue({
-  // inject apolloProvider here like vue-router or vuex    
   router,
   render: h => h(App)
 }).$mount('#app')

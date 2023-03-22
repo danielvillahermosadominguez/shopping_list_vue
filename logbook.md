@@ -158,7 +158,7 @@ BUGS/PROBLEMS:
 
 - include the validation of the name in the edition
 - Remove ChangeParametersItem.vue
-
+- UI = About page is not working => now it is working
 -Next steps are:          
   - Review and refactor of the test and code.
   - Review every flaky tests: we have a some of them.  
@@ -174,4 +174,4 @@ BUGS/PROBLEMS:
 - CI = The first time I execute acceptance tests they fail.
     - We have several flaky tests. We should review them (too much flaky tests)
 - UI = the HTML elements change their size. To improve for better experience
-- UI = About page is not working
+
