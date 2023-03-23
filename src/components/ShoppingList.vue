@@ -11,7 +11,7 @@
                     items</button>
                 <ContinueQuestion id="questionForm" role="questionForm" v-if="showModal" header="" :question="modalMessage"
                     @ok="executeAction($event)" @cancel="cancelLastAction()"> </ContinueQuestion>                                
-                <UpdateItemForm id="questionForm2" role="questionForm2" v-if="showEdit" header="" :item="actionArgument"
+                <UpdateItemForm id="editForm" role="editForm" v-if="showEdit" header="" :item="actionArgument"
                     @ok="($event,args) => executeAction($event,args)" @cancel="cancelLastAction()"> </UpdateItemForm> 
                 <br>
                 <div>

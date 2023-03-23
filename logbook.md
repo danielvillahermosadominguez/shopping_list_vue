@@ -175,4 +175,21 @@ BUGS/PROBLEMS:
 BUGS/PROBLEMS:
   - Style for errors. Review it. In the edit, it doesn't adapt to the size of the window.
 
+23/03/2023
+  - Review every flaky tests: we have a some of them.  Solved.
+
+-Next steps are:          
+  - Review and refactor of the test and code.  
+  - Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush  
+- Parking lot:
+  - ViewModel pattern.
+  - Login
+  - Common styles for all the application
+  - Use the controls vuetify
+
+BUGS/PROBLEMS:
+  - Style for errors. Review it. In the edit, it doesn't adapt to the size of the window.
+
+
 
