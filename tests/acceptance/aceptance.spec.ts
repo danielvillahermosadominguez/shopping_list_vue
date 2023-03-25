@@ -1,7 +1,7 @@
 import { render, fireEvent, waitFor } from '@testing-library/vue';
 import AppService from '@/appservices/AppService';
 import '@testing-library/jest-dom';
-import { MemoryServiceFixture } from '@/apolloserver/memoryservicefixture';
+import { BackendScriptServiceFixture } from '@/apolloserver/backendscriptservicefixture';
 import HomeView from '@/views/HomeView.vue';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import '@/environment/loadvariables';
@@ -12,7 +12,8 @@ jest.setTimeout(10000);
 describe('Shopping list acceptance tests', () => {
   const appService = new AppService(
     process.env.VUE_APP_SERVICE_BACKEND);
-  const serviceFixture = new MemoryServiceFixture(appService,
+    const serviceFixture = new BackendScriptServiceFixture(appService,
+    process.env.FIXTURE_BACKEND_SCRIPT? process.env.FIXTURE_BACKEND_SCRIPT: "",
     process.env.BACKEND_TIME_OUT ? parseInt(process.env.BACKEND_TIME_OUT) : undefined,
     process.env.BACKEND_TIME_OUT_INCREMENT ? parseInt(process.env.BACKEND_TIME_OUT_INCREMENT) : undefined);
 

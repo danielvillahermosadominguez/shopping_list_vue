@@ -191,5 +191,19 @@ BUGS/PROBLEMS:
 BUGS/PROBLEMS:
   - Style for errors. Review it. In the edit, it doesn't adapt to the size of the window.
 
-
+25/03/2023
+- CI with github actions
+- Review and refactor of the test and code.  
+- script to run the fixtureServiceMemoryStorage
+-Next steps are:      
+  - Validation in edit form doesn't work the style
+  - Fix fields for the Table. The fields are adapted to the text and it is strange
+  - Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush  
+- Parking lot:
+  - resources for text in front (multilanguage)
+  - ViewModel pattern.
+  - Login
+  - Common styles for all the application
+  - Use the controls vuetify
 

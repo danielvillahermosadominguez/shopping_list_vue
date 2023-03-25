@@ -60,7 +60,7 @@ export default defineComponent({
     },
     methods: {
         isValidInput(): boolean {
-            const result: boolean | undefined = this.validator.check(this.$data.updatedItem.name);
+            const result: boolean | undefined = this.validator.isShoppingListItemNameCorrect(this.$data.updatedItem.name);
             if (result === undefined) {
                 this.$data.error = "";
                 return false;

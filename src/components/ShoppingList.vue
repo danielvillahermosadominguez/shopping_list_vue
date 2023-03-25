@@ -66,6 +66,12 @@ import ContinueQuestion from './ContinueQuestion.vue';
 import UpdateItemForm from './UpdateItemForm.vue';
 import NameValidator from '@/validators/namevalidator';
 const emptyShoppingItem = new ShoppingListItem();
+enum Actions {
+    none,
+    editItem,
+    deleteAll,
+    deleteSelectedItem,
+}
 export default defineComponent({
     name: "ShoppingList",
     props: {
@@ -80,7 +86,7 @@ export default defineComponent({
             showModal: false,
             showEdit: false,
             modalMessage: '',
-            action: '',
+            action: Actions.none,
             actionArgument: undefined as ShoppingListItem | undefined,
             validator: new NameValidator() as NameValidator
         };
@@ -106,34 +112,34 @@ export default defineComponent({
             }
         },
         askToEditItem(item: ShoppingListItem) {            
-            this.action = "editItem";            
+            this.action = Actions.editItem;            
             this.actionArgument = item;
             this.showEdit = true;
         },
         askToDeleteAll() {
             this.modalMessage = "You are going to delete all the items. Are you sure?";
-            this.action = "deleteAll";
+            this.action = Actions.deleteAll;            
             this.showModal = true;
         },
         askToDeleteOne(item: ShoppingListItem) {            
             this.modalMessage = `You are going to remove the item ${item.name}. Are you sure?`;
-            this.action = "deleteSelectedItem";
+            this.action = Actions.deleteSelectedItem;            
             this.actionArgument = item;
             this.showModal = true;
         },
         cancelLastAction() {            
             this.modalMessage = '';
-            this.action = '';
+            this.action = Actions.none;
             this.showModal = false;
             this.showEdit = false;
             this.actionArgument = undefined;
         },
         executeAction(event: Event, updatedItem: ShoppingListItem | undefined = undefined) {            
-            if (this.action === 'deleteAll') {
+            if (this.action === Actions.deleteAll) {
                 this.deleteAll();
-            } else if ((this.action === 'deleteSelectedItem') && (this.actionArgument !== undefined)) {
+            } else if ((this.action ===  Actions.deleteSelectedItem) && (this.actionArgument !== undefined)) {
                 this.deleteItem(this.actionArgument);
-            } else if ((this.action === 'editItem') && (updatedItem !== undefined)) {                
+            } else if ((this.action ===  Actions.editItem) && (updatedItem !== undefined)) {                
                 this.updateItem(updatedItem);
             }
             this.cancelLastAction();
@@ -164,12 +170,12 @@ export default defineComponent({
                 this.refreshList();
             }
         },
-        isValidInput(): boolean {
-            const result:boolean|undefined = this.validator.check(this.$data.inputValue);            
-            if (result === undefined) {
+        isValidInput(): boolean {            
+            if (this.$data.inputValue === "") {
                 this.$data.error = "";
                 return false;
             } 
+            const result:boolean = this.validator.isShoppingListItemNameCorrect(this.$data.inputValue);            
 
             if(!result) {
                 this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
