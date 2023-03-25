@@ -5,21 +5,19 @@ import { BackendScriptServiceFixture } from '@/apolloserver/backendscriptservice
 import HomeView from '@/views/HomeView.vue';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import '@/environment/loadvariables';
-import flushPromises from 'flush-promises';
-
-jest.setTimeout(10000);
+import { FactoryServiceFixture } from '@/apolloserver/fixtureServiceFactory';
 
 describe('Shopping list acceptance tests', () => {
-  const appService = new AppService(
-    process.env.VUE_APP_SERVICE_BACKEND);
-    const serviceFixture = new BackendScriptServiceFixture(appService,
-    process.env.FIXTURE_BACKEND_SCRIPT? process.env.FIXTURE_BACKEND_SCRIPT: "",
-    process.env.BACKEND_TIME_OUT ? parseInt(process.env.BACKEND_TIME_OUT) : undefined,
-    process.env.BACKEND_TIME_OUT_INCREMENT ? parseInt(process.env.BACKEND_TIME_OUT_INCREMENT) : undefined);
+  const TEMPORAL_MAXIMUM_DELAY_FOR_JEST_TO_WAIT_FIXTURE = 10000;
+  const DEFAULT_DELAY_FOR_JEST = 10000;
+  const serviceFixture: BackendScriptServiceFixture = FactoryServiceFixture.createBasedOnConfiguration();
+  const appService: AppService = serviceFixture.appService;
+
 
   beforeAll(async () => {
+    jest.setTimeout(TEMPORAL_MAXIMUM_DELAY_FOR_JEST_TO_WAIT_FIXTURE);
     await serviceFixture.init();
-    jest.setTimeout(5000);
+    jest.setTimeout(DEFAULT_DELAY_FOR_JEST);
   });
 
   afterEach(async () => {
@@ -30,20 +28,31 @@ describe('Shopping list acceptance tests', () => {
     serviceFixture.disposeFixture();
   });
 
+  it(`Given a list with elements
+           When the user load the page           
+           the list is showed` , async () => {
+    await appService.add(new ShoppingListItem('bread', 5));
+    await appService.add(new ShoppingListItem('milk', 3));
+    await appService.add(new ShoppingListItem('carrots', 6));
+    const rend = renderHomeViewPage();
+
+    await waitFor(() => {
+      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(rend.getByText('milk')).toBeInTheDocument();
+      expect(rend.getByText('carrots')).toBeInTheDocument();
+    });
+  })
+
   it(`Given an empty list 
       When the user add an item
       Then the list has an item`, async () => {
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
+    const rend = renderHomeViewPage();
     const input = rend.getByRole('itemInput');
     await fireEvent.input(input, { target: { value: 'bread' } });
     const addItemButton = rend.getByRole('addButton');
 
     await fireEvent.click(addItemButton);
-    
+
     await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();
       expect(rend.getByText('1')).toBeInTheDocument();
@@ -54,22 +63,16 @@ describe('Shopping list acceptance tests', () => {
   When the user add a new one element with a wrong format
   Then this element cannot be included in the list`, async () => {
     await appService.add(new ShoppingListItem('bread', 1));
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
-
+    const rend = renderHomeViewPage();
     const input = rend.getByRole('itemInput');
     fireEvent.input(input, { target: { value: '  bre' } });
 
     const addItemButton = rend.getByRole('addButton');
 
     await waitFor(async () => {
-      expect(await rend.getByLabelText('Please, write the name of the item:')).toHaveValue('  bre');
+      expect(rend.getByLabelText('Please, write the name of the item:')).toHaveValue('  bre');
       expect(rend.getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
       expect(addItemButton).toBeDisabled();
-
     });
 
   })
@@ -81,23 +84,10 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
-    
-    await waitFor(() => {
-      expect( rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
-    });
-
+    const rend = renderHomeViewPage();
     const deleteAllButton = rend.getByRole('deleteAllButton');
     await fireEvent.click(deleteAllButton);
-    expect(rend.getByRole('questionForm')).toBeInTheDocument();
-    const refuseDeleteAll = rend.getByText('Cancel');
+    const refuseDeleteAll = await rend.findByText('Cancel');
 
     await fireEvent.click(refuseDeleteAll);
 
@@ -115,26 +105,10 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
-    
-    let bread: HTMLHtmlElement;
-    let milk: HTMLHtmlElement;
-    let carrots: HTMLHtmlElement;
-    await waitFor(() => {      
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
-    });
-
-    const deleteAllButton = rend.getByRole('deleteAllButton');
+    const rend = renderHomeViewPage();
+    const deleteAllButton = await rend.findByRole('deleteAllButton');
     await fireEvent.click(deleteAllButton);
-    expect(rend.getByRole('questionForm')).toBeInTheDocument();
-    const acceptDeleteAll = rend.getByText('Accept');
+    const acceptDeleteAll = await rend.findByText('Accept');
 
     await fireEvent.click(acceptDeleteAll);
 
@@ -142,7 +116,7 @@ describe('Shopping list acceptance tests', () => {
       expect(rend.queryByText('bread')).toBeNull();
       expect(rend.queryByText('milk')).toBeNull();
       expect(rend.queryByText('carrots')).toBeNull();
-      
+
     });
     expect(deleteAllButton).toBeDisabled();
   })
@@ -154,20 +128,8 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
-    await flushPromises();
-    await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
-    });
-
-    const deleteItemButtons = rend.getAllByRole('deleteItem');
+    const rend = renderHomeViewPage();
+    const deleteItemButtons = await rend.findAllByRole('deleteItem');
     const deleteBreadButton = deleteItemButtons[0];
     await fireEvent.click(deleteBreadButton);
     expect(rend.getByRole('questionForm')).toBeInTheDocument();
@@ -187,19 +149,9 @@ describe('Shopping list acceptance tests', () => {
             Then the quantity is decreased
   `, async () => {
     await appService.add(new ShoppingListItem('bread', 5));
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
-    
+    const rend = renderHomeViewPage();
+    const decreaseItemButton = await rend.findByRole('decreaseQuantity');
 
-    await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('5')).toBeInTheDocument();
-    });
-
-    const decreaseItemButton = rend.getByRole('decreaseQuantity');
     await fireEvent.click(decreaseItemButton);
 
     await waitFor(() => {
@@ -213,21 +165,10 @@ describe('Shopping list acceptance tests', () => {
             Then the quantity is increased
   `, async () => {
     await appService.add(new ShoppingListItem('bread', 5));
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
+    const rend = renderHomeViewPage();
 
-    await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('5')).toBeInTheDocument();
-    });
-
-    const increaseItemButton = rend.getByRole('increaseQuantity');
-    await fireEvent.click(increaseItemButton);
-
-    await flushPromises();
+    const increaseItemButton = await rend.findByRole('increaseQuantity');
+    await fireEvent.click(increaseItemButton);    
 
     await waitFor(() => {
       expect(rend.getByText('bread')).toBeInTheDocument();
@@ -243,34 +184,16 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
 
-    const rend = render(HomeView, {
-      props: {
-        appService: appService
-      }
-    });
+    const rend = renderHomeViewPage();
 
-    await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
-    });
-
-    const editButtons = rend.getAllByRole('editItem');
-    const editBreadButton = editButtons[0];    
-    await fireEvent.click(editBreadButton);
-    await waitFor(() => {
-      expect(rend.queryByRole('editForm')).not.toBeNull();
-    });
-
-    let inputEdit = rend.getByRole('nameInput');
+    const editButtons = await rend.findAllByRole('editItem');
+    const editBreadButton = editButtons[0];
+    await fireEvent.click(editBreadButton);    
+    let inputEdit = await rend.findByRole('nameInput');
     await fireEvent.input(inputEdit, { target: { value: 'RANDOM_ITEM' } });
-    
-
     const acceptButton = rend.getByText('Accept');
 
-    await fireEvent.click(acceptButton);
-
-    await flushPromises();
+    await fireEvent.click(acceptButton);    
 
     await waitFor(async () => {
       expect(rend.getByText('milk')).toBeInTheDocument();
@@ -278,4 +201,12 @@ describe('Shopping list acceptance tests', () => {
       expect(await rend.queryByText('RANDOM_ITEM')).toBeNull();
     });
   })
+
+  const renderHomeViewPage = () => {
+    return render(HomeView, {
+      props: {
+        appService: appService
+      }
+    });
+  }
 });

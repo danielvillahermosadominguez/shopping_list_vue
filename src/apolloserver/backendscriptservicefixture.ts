@@ -6,13 +6,17 @@ import * as util from "util";
 const ERROR_MESSAGE_NOT_POSSIBLE_TO_CONTACT_WITH_SERVER = "Not possible to contact with server fixture with timeout of %s seconds";
 export class BackendScriptServiceFixture {
     private worker: WorkerImplementation | undefined;
-    private appService: AppService;
+    private _appService: AppService;
     private timeOut: number;
     private increment: number;
     private fixtureScript:string;
 
+    get appService() {
+        return this._appService;
+    }
+    
     public constructor(appServer: AppService,  fixtureScript:string, timeOut = 5000, increment = 500) {
-        this.appService = appServer;
+        this._appService = appServer;
         this.timeOut = timeOut;
         this.increment = increment;
         this.fixtureScript = fixtureScript;
@@ -22,7 +26,7 @@ export class BackendScriptServiceFixture {
         let counter = 0;
         let end = false;
         while (!end && counter < this.timeOut) {
-            end = await this.appService.serverIsReady();
+            end = await this._appService.serverIsReady();
             await this.waitFor(this.increment);
             counter += this.increment;
         }

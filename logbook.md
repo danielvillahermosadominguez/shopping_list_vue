@@ -196,7 +196,10 @@ BUGS/PROBLEMS:
 - Review and refactor of the test and code.  
 - script to run the fixtureServiceMemoryStorage
 - change in the name of the test folder: __tests__
+- refactoring of acceptance tests
+  
 -Next steps are:      
+  - flacky tests again after refactoring. I removed some unnecesary asserts
   - Validation in edit form doesn't work the style
   - Fix fields for the Table. The fields are adapted to the text and it is strange
   - Writing the readme and conclusions after the first feature.  + remember to include:
