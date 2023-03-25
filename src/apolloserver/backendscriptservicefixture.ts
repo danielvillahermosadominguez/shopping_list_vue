@@ -3,7 +3,7 @@ import AppService from '@/appservices/AppService';
 import { WorkerImplementation } from 'threads/dist/types/master';
 import * as util from "util";
 
-const ERROR_MESSAGE = "Not possible to contact with server with timeout of %s seconds";
+const ERROR_MESSAGE_NOT_POSSIBLE_TO_CONTACT_WITH_SERVER = "Not possible to contact with server fixture with timeout of %s seconds";
 export class BackendScriptServiceFixture {
     private worker: WorkerImplementation | undefined;
     private appService: AppService;
@@ -28,7 +28,7 @@ export class BackendScriptServiceFixture {
         }
         
         if (!end) {
-            const errorMessage = util.format(ERROR_MESSAGE, this.timeOut / 1000);
+            const errorMessage = util.format(ERROR_MESSAGE_NOT_POSSIBLE_TO_CONTACT_WITH_SERVER, this.timeOut / 1000);
             throw new Error(errorMessage);
         }
     }
@@ -41,8 +41,13 @@ export class BackendScriptServiceFixture {
 
     
     public async init() {
-        this.startServer();
-        await this.waitingForServer();
+        try {
+            this.startServer();
+            await this.waitingForServer();
+          } catch (e: Error | unknown) {
+            this.disposeFixture();
+            throw e;
+          }        
     }
 
     private startServer() {

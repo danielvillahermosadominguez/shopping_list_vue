@@ -18,12 +18,7 @@ describe('Shopping list acceptance tests', () => {
     process.env.BACKEND_TIME_OUT_INCREMENT ? parseInt(process.env.BACKEND_TIME_OUT_INCREMENT) : undefined);
 
   beforeAll(async () => {
-    try {
-      await serviceFixture.init();
-    } catch (e: Error | unknown) {
-      serviceFixture.disposeFixture();
-      throw new Error("service fixture couldn't be initialized:" + e);
-    }
+    await serviceFixture.init();
     jest.setTimeout(5000);
   });
 
