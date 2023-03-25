@@ -3,7 +3,7 @@ import AppService from '@/appservices/AppService';
 import { WorkerImplementation } from 'threads/dist/types/master';
 import * as util from "util";
 
-const ERROR_MESSAGE:string = "Not possible to contact with server with timeout of %s seconds";
+const ERROR_MESSAGE = "Not possible to contact with server with timeout of %s seconds";
 export class BackendScriptServiceFixture {
     private worker: WorkerImplementation | undefined;
     private appService: AppService;

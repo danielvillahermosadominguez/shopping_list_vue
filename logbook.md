@@ -195,6 +195,7 @@ BUGS/PROBLEMS:
 - CI with github actions
 - Review and refactor of the test and code.  
 - script to run the fixtureServiceMemoryStorage
+- change in the name of the test folder: __tests__
 -Next steps are:      
   - Validation in edit form doesn't work the style
   - Fix fields for the Table. The fields are adapted to the text and it is strange
@@ -206,4 +207,5 @@ BUGS/PROBLEMS:
   - Login
   - Common styles for all the application
   - Use the controls vuetify
+  - features toggle with configcat
 

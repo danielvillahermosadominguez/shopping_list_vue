@@ -47,6 +47,24 @@ module.exports = {
 
 And also, for ATDD we are going to use the exception:  throw new Error("Not implemented");  when a method or acceptance test is not implemented yet.
 
+# Activate Test coverage
+You need to configure the collectCoverage and CollectCoverageFrom 
+``` js
+module.exports = {
+  preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+  testMatch: [
+    "**/__tests__/**/*.[jt]s?(x)",
+    "**/?(*.)+(spec|test).[tj]s?(x)"
+  ],
+  collectCoverage: true,
+  collectCoverageFrom: [
+    'src/**/*.{js,vue, ts}',
+    '!src/main.js', // No need to cover bootstrap file
+  ],
+}
+
+```
+Now, when you execute "npm run test:unit" you will see the coverage when the test are executed and a folder will be crated: coverage
 # Apollo Client - some notes
 I have created an application service to encaptusate the calls to apollo. In addition, we have created a fixture for the acceptance tests (not end to end).
  * The class AppService contains all the code to configure the client. Some relevant libraries
