@@ -30,48 +30,48 @@ describe('Shopping list acceptance tests', () => {
 
   it(`Given a list with elements
            When the user load the page           
-           the list is showed` , async () => {
+           the list is showed` , async () => {    
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-    const rend = renderHomeViewPage();
+    const {getByText} = renderHomeViewPage();     
 
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
+      expect(getByText('bread')).toBeInTheDocument();
+      expect(getByText('milk')).toBeInTheDocument();
+      expect(getByText('carrots')).toBeInTheDocument();
     });
   })
 
   it(`Given an empty list 
       When the user add an item
       Then the list has an item`, async () => {
-    const rend = renderHomeViewPage();
-    const input = rend.getByRole('itemInput');
+    const {getByRole, getByText} = renderHomeViewPage();
+    const input = getByRole('itemInput');
     await fireEvent.input(input, { target: { value: 'bread' } });
-    const addItemButton = rend.getByRole('addButton');
+    const addItemButton = getByRole('addButton');
 
     await fireEvent.click(addItemButton);
 
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('1')).toBeInTheDocument();
+      expect(getByText('bread')).toBeInTheDocument();
+      expect(getByText('1')).toBeInTheDocument();
     });
   })
 
   it(`Given a list with elements
   When the user add a new one element with a wrong format
-  Then this element cannot be included in the list`, async () => {
+  Then this element cannot be included in the list`, async () => {    
     await appService.add(new ShoppingListItem('bread', 1));
-    const rend = renderHomeViewPage();
-    const input = rend.getByRole('itemInput');
+    const {getByRole, getByText, getByLabelText} = renderHomeViewPage();
+    const input = getByRole('itemInput');
     fireEvent.input(input, { target: { value: '  bre' } });
 
-    const addItemButton = rend.getByRole('addButton');
+    const addItemButton = getByRole('addButton');
 
     await waitFor(async () => {
-      expect(rend.getByLabelText('Please, write the name of the item:')).toHaveValue('  bre');
-      expect(rend.getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
+      expect(getByLabelText('Please, write the name of the item:')).toHaveValue('  bre');
+      expect(getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
       expect(addItemButton).toBeDisabled();
     });
 
@@ -84,17 +84,17 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-    const rend = renderHomeViewPage();
-    const deleteAllButton = rend.getByRole('deleteAllButton');
+    const {getByRole, getByText, findByText} = renderHomeViewPage();
+    const deleteAllButton = getByRole('deleteAllButton');
     await fireEvent.click(deleteAllButton);
-    const refuseDeleteAll = await rend.findByText('Cancel');
+    const refuseDeleteAll = await findByText('Cancel');
 
     await fireEvent.click(refuseDeleteAll);
 
     await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
+      expect(getByText('bread')).toBeInTheDocument();
+      expect(getByText('milk')).toBeInTheDocument();
+      expect(getByText('carrots')).toBeInTheDocument();
     });
   })
 
@@ -105,17 +105,17 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-    const rend = renderHomeViewPage();
-    const deleteAllButton = await rend.findByRole('deleteAllButton');
+    const {queryByText, findByRole, findByText} = renderHomeViewPage();
+    const deleteAllButton = await findByRole('deleteAllButton');
     await fireEvent.click(deleteAllButton);
-    const acceptDeleteAll = await rend.findByText('Accept');
+    const acceptDeleteAll = await findByText('Accept');
 
     await fireEvent.click(acceptDeleteAll);
 
     await waitFor(() => {
-      expect(rend.queryByText('bread')).toBeNull();
-      expect(rend.queryByText('milk')).toBeNull();
-      expect(rend.queryByText('carrots')).toBeNull();
+      expect(queryByText('bread')).toBeNull();
+      expect(queryByText('milk')).toBeNull();
+      expect(queryByText('carrots')).toBeNull();
 
     });
     expect(deleteAllButton).toBeDisabled();
@@ -128,19 +128,18 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('bread', 5));
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
-    const rend = renderHomeViewPage();
-    const deleteItemButtons = await rend.findAllByRole('deleteItem');
+    const {getByText,queryByText, findAllByRole, findByText} = renderHomeViewPage();
+    const deleteItemButtons = await findAllByRole('deleteItem');
     const deleteBreadButton = deleteItemButtons[0];
-    await fireEvent.click(deleteBreadButton);
-    expect(rend.getByRole('questionForm')).toBeInTheDocument();
-    const acceptButton = rend.getByText('Accept');
+    await fireEvent.click(deleteBreadButton);    
+    const acceptButton = await findByText('Accept');
 
     await fireEvent.click(acceptButton);
 
     await waitFor(() => {
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
-      expect(() => rend.getByText('bread')).toThrowError();
+      expect(getByText('milk')).toBeInTheDocument();
+      expect(getByText('carrots')).toBeInTheDocument();
+      expect(queryByText('bread')).toBeNull();
     });
   })
 
@@ -149,14 +148,14 @@ describe('Shopping list acceptance tests', () => {
             Then the quantity is decreased
   `, async () => {
     await appService.add(new ShoppingListItem('bread', 5));
-    const rend = renderHomeViewPage();
-    const decreaseItemButton = await rend.findByRole('decreaseQuantity');
+    const {getByText, findByRole, findByText} = renderHomeViewPage();
+    const decreaseItemButton = await findByRole('decreaseQuantity');
 
     await fireEvent.click(decreaseItemButton);
-
-    await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
-      expect(rend.queryByText('4')).not.toBeNull();
+    
+    await waitFor(async () => {
+      expect(await findByText('4')).toBeInTheDocument();
+      expect(getByText('bread')).toBeInTheDocument();   
     });
   })
 
@@ -165,15 +164,15 @@ describe('Shopping list acceptance tests', () => {
             Then the quantity is increased
   `, async () => {
     await appService.add(new ShoppingListItem('bread', 5));
-    const rend = renderHomeViewPage();
+    const {getByText,queryByText, findByRole} = renderHomeViewPage();
 
-    const increaseItemButton = await rend.findByRole('increaseQuantity');
+    const increaseItemButton = await findByRole('increaseQuantity');
     await fireEvent.click(increaseItemButton);    
 
     await waitFor(() => {      
-      expect(rend.queryByText('5')).toBeNull();
-      expect(rend.getByText('6')).toBeInTheDocument();
-      expect(rend.getByText('bread')).toBeInTheDocument();
+      expect(queryByText('5')).toBeNull();
+      expect(getByText('6')).toBeInTheDocument();
+      expect(getByText('bread')).toBeInTheDocument();
     });
   })
 
@@ -184,21 +183,21 @@ describe('Shopping list acceptance tests', () => {
     await appService.add(new ShoppingListItem('milk', 3));
     await appService.add(new ShoppingListItem('carrots', 6));
 
-    const rend = renderHomeViewPage();
+    const {getByText, findAllByRole, findByRole, queryByText} = renderHomeViewPage();
 
-    const editButtons = await rend.findAllByRole('editItem');
+    const editButtons = await findAllByRole('editItem');
     const editBreadButton = editButtons[0];
     await fireEvent.click(editBreadButton);    
-    let inputEdit = await rend.findByRole('nameInput');
+    let inputEdit = await findByRole('nameInput');
     await fireEvent.input(inputEdit, { target: { value: 'RANDOM_ITEM' } });
-    const acceptButton = rend.getByText('Accept');
+    const acceptButton = getByText('Accept');
 
     await fireEvent.click(acceptButton);    
 
     await waitFor(async () => {
-      expect(rend.getByText('milk')).toBeInTheDocument();
-      expect(rend.getByText('carrots')).toBeInTheDocument();
-      expect(await rend.queryByText('RANDOM_ITEM')).toBeNull();
+      expect(getByText('milk')).toBeInTheDocument();
+      expect(getByText('carrots')).toBeInTheDocument();
+      expect(queryByText('RANDOM_ITEM')).toBeNull();
     });
   })
 
