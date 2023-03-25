@@ -3,12 +3,64 @@ import '@testing-library/jest-dom'
 import ShoppingList from '@/components/ShoppingList.vue';
 import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
-import flushPromises from 'flush-promises';
 jest.mock('@/appservices/AppService');
 
 describe('Shopping list', () => {
     let rend: RenderResult;
     let appService = new AppService();
+    const setUpRender = () => {
+        return render(ShoppingList as any, {
+            propsData: {
+                appService: appService
+            }
+        });
+    };
+
+    describe("the initial screen is showed", () => {
+        beforeEach(() => {
+            jest.resetAllMocks();
+            appService.add = jest.fn(() => new Promise(jest.fn()));
+            appService.getItems = jest.fn(() => new Promise(() => []));
+            // eslint-disable-next-line
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+        });
+
+        afterEach(() => {
+            jest.resetAllMocks();
+        });
+
+        it("should have an input without any initial value", () => {
+            const { getByRole } = rend;
+            const input = getByRole('itemInput');
+
+            expect(input).toBeInTheDocument();
+            expect(input).not.toHaveValue();
+            expect(input).not.toHaveValue();
+        });
+
+        it("should have a label with describing the input", () => {
+            const { getByLabelText } = rend;
+            const input = getByLabelText('Please, write the name of the item:');
+
+            expect(input).toBeInTheDocument();
+            expect(input).not.toHaveValue();
+            expect(input).not.toHaveValue();
+        });
+
+        it("should shown the headers of the Shopping list empty when there is not elements", async () => {
+            const { queryAllByText } = rend;
+            const itemHeader = queryAllByText('Item');
+            const quantityHeader = queryAllByText('Quantity');
+
+            expect(itemHeader.length).toBe(1);
+            expect(quantityHeader.length).toBe(1);
+        });
+    });
+
     describe("an item is added", () => {
         beforeEach(() => {
             appService.add = jest.fn(() => new Promise(jest.fn()));
@@ -21,33 +73,19 @@ describe('Shopping list', () => {
             });
         });
 
-        it("should have an input without any initial value", () => {
-            const input = rend.getByRole('itemInput');
-
-            expect(input).toBeInTheDocument();
-            expect(input).not.toHaveValue();
-            expect(input).not.toHaveValue();
-        });
-
-        it("should have a label with describing the input", () => {
-            const input = rend.getByLabelText('Please, write the name of the item:');
-
-            expect(input).toBeInTheDocument();
-            expect(input).not.toHaveValue();
-            expect(input).not.toHaveValue();
-        });
-
         it("should have a button to add items", () => {
-            const addItemButton = rend.getByRole('addButton');
+            const { getByRole } = rend;
+            const addItemButton = getByRole('addButton');
 
             expect(addItemButton).toBeInTheDocument();
         });
 
         it("should disable the button when the input is empty", async () => {
-            const input = rend.getByRole('itemInput');
+            const { getByRole } = rend;
+            const input = getByRole('itemInput');
             await fireEvent.input(input, { target: { value: '' } });
 
-            const addItemButton = rend.getByRole('addButton');
+            const addItemButton = getByRole('addButton');
 
             expect(input).not.toHaveValue();
             expect(addItemButton).toBeDisabled();
@@ -59,45 +97,41 @@ describe('Shopping list', () => {
             ["some spaces and characters", "  aa11"]
 
         ])("should disable the button when the input is %s = '%s' and show a message", async (_: string, param: string) => {
-            const input = rend.getByRole('itemInput');
+            const { getByRole, findByText } = rend;
+            const input = getByRole('itemInput');
             await fireEvent.input(input, { target: { value: param } });
 
-            const addItemButton = rend.getByRole('addButton');
+            const addItemButton = getByRole('addButton');
 
             expect(input).toHaveValue(param);
-            expect(await rend.findByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
+            expect(await findByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
             expect(addItemButton).toBeDisabled();
         });
 
         it("should enable the button when the input is not empty", async () => {
-            const input = rend.getByRole('itemInput');
+            const { getByRole } = rend;
+            const input = getByRole('itemInput');
             await fireEvent.input(input, { target: { value: 'bread' } });
 
-            const addItemButton = rend.getByRole('addButton');
+            const addItemButton = getByRole('addButton');
 
             expect(input).toHaveValue();
             expect(addItemButton).toBeEnabled();
         });
 
-        it("should not have any value in the input when the button is clicked", async () => {
-            const input = rend.getByRole('itemInput');
+        it("should not have any value in the input when the additem button is clicked", async () => {
+            const { getByRole } = rend;
+            const input = getByRole('itemInput');
             await fireEvent.input(input, { target: { value: 'bread' } });
-            const addItemButton = rend.getByRole('addButton');
+            const addItemButton = getByRole('addButton');
 
             await fireEvent.click(addItemButton);
 
             expect(input).not.toHaveValue();
         });
 
-        it("should shown the headers of the Shopping list empty when there is not elements", async () => {
-            const itemHeader = rend.queryAllByText('Item');
-            const quantityHeader = rend.queryAllByText('Quantity');
-
-            expect(itemHeader.length).toBe(1);
-            expect(quantityHeader.length).toBe(1);
-        });
-
         it("should shown an item when a new element is added", async () => {
+            const { getByRole, findByText, getByText } = rend;
             const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
             appService.add = async (item: ShoppingListItem) => {
                 return new Promise<undefined>((resolve) => {
@@ -111,27 +145,34 @@ describe('Shopping list', () => {
                 resolve(shoppingList);
                 return shoppingList;
             }));
-            const input = rend.getByRole('itemInput');
+
+            const input = getByRole('itemInput');
             await fireEvent.input(input, { target: { value: 'bread' } });
-            const addItemButton = rend.getByRole('addButton');
+            const addItemButton = getByRole('addButton');
 
             await fireEvent.click(addItemButton);
 
-            expect(await rend.findByText('bread')).toBeInTheDocument();
-            expect(rend.getByText('1')).toBeInTheDocument();
+            expect(await findByText('bread')).toBeInTheDocument();
+            expect(getByText('1')).toBeInTheDocument();
         });
     });
 
-    describe("items are deleted", () => {
+    describe("items are deleted", () => {      
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
+        afterEach(() => {
+            jest.resetAllMocks();
+        });
+
         it("should have a button to delete all items disabled when there are not items", () => {
             appService.add = jest.fn(() => new Promise(jest.fn()));
             appService.getItems = jest.fn(() => new Promise(() => []));
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
-            const deleteAllButton = rend.getByRole('deleteAllButton');
+            const { getByRole } = setUpRender();
+
+            const deleteAllButton = getByRole('deleteAllButton');
+
             expect(deleteAllButton).toBeInTheDocument();
             expect(deleteAllButton).toBeDisabled();
         });
@@ -146,13 +187,9 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const { getByRole } = setUpRender();
 
-            const deleteAllButton = rend.getByRole('deleteAllButton');
+            const deleteAllButton = getByRole('deleteAllButton');
             expect(deleteAllButton).toBeInTheDocument();
             await waitFor(() => {
                 expect(deleteAllButton).toBeEnabled();
@@ -169,18 +206,12 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const { getByRole } = setUpRender();
 
-            const deleteAllButton = rend.getByRole('deleteAllButton');
-            await fireEvent.click(deleteAllButton);
-            let questionForm: HTMLElement;
+            const deleteAllButton = getByRole('deleteAllButton');
+            await fireEvent.click(deleteAllButton);            
             await waitFor(() => {
-                questionForm = rend.getByRole('questionForm')
-                expect(questionForm).toBeInTheDocument();
+                expect(getByRole('questionForm')).toBeInTheDocument();
             });
         });
 
@@ -195,18 +226,14 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const { getByRole, getByText, queryByRole} = setUpRender();
 
-            const deleteAllButton = rend.getByRole('deleteAllButton');
+            const deleteAllButton = getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
 
-            const cancelButton = rend.getByText("Cancel");
+            const cancelButton = getByText("Cancel");
             await fireEvent.click(cancelButton);
-            expect(rend.queryByRole('questionForm')).toBeNull();
+            expect(queryByRole('questionForm')).toBeNull();
         });
 
         it("should, if the user refuse delete all, and not delete anything", async () => {
@@ -218,27 +245,22 @@ describe('Shopping list', () => {
                 resolve(shoppingList);
                 return shoppingList;
             }));
-
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
-
-            const deleteAllButton = rend.getByRole('deleteAllButton');
+            const { getByRole, getByText} = setUpRender();
+            const deleteAllButton = getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
-            const cancelButton = rend.getByText("Cancel");
+            const cancelButton = getByText("Cancel");
+
             await fireEvent.click(cancelButton);
 
-            expect(rend.getByText('bread')).toBeInTheDocument();
-            expect(rend.getByText('5')).toBeInTheDocument();
-            expect(rend.getByText('milk')).toBeInTheDocument();
-            expect(rend.getByText('3')).toBeInTheDocument();
-            expect(rend.getByText('carrots')).toBeInTheDocument();
-            expect(rend.getByText('6')).toBeInTheDocument();
+            expect(getByText('bread')).toBeInTheDocument();
+            expect(getByText('5')).toBeInTheDocument();
+            expect(getByText('milk')).toBeInTheDocument();
+            expect(getByText('3')).toBeInTheDocument();
+            expect(getByText('carrots')).toBeInTheDocument();
+            expect(getByText('6')).toBeInTheDocument();
         });
 
-        it("should stop showing the question form if the user accept delete all", async () => {
+        it("should(showing the question form if the user accept delete all", async () => {
             const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
             shoppingList.push(new ShoppingListItem("bread", 5));
             shoppingList.push(new ShoppingListItem("milk", 3));
@@ -248,18 +270,14 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
-            const deleteAllButton = rend.getByRole('deleteAllButton');
+            const {queryByRole, getByRole, getByText} = setUpRender();
+            const deleteAllButton = getByRole('deleteAllButton');
 
             await fireEvent.click(deleteAllButton);
 
-            const acceptButton = rend.getByText("Accept");
+            const acceptButton = getByText("Accept");
             await fireEvent.click(acceptButton);
-            expect(rend.queryByRole('questionForm')).toBeNull();
+            expect(queryByRole('questionForm')).toBeNull();
         });
 
         it("should delete all if the user accept delete all", async () => {
@@ -273,25 +291,21 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {queryByText, getByRole, findByText} = setUpRender();
 
             shoppingList = new Array<ShoppingListItem>();
 
-            const deleteAllButton = rend.getByRole('deleteAllButton');
+            const deleteAllButton = getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
-            const acceptButton = await rend.findByText("Accept");
+            const acceptButton = await findByText("Accept");
 
             await fireEvent.click(acceptButton);
 
             expect(appService.deleteAll).toBeCalledTimes(1);
             await waitFor(() => {
-                expect(rend.queryByText('bread')).toBeNull();
-                expect(rend.queryByText('milk')).toBeNull();
-                expect(rend.queryByText('carrots')).toBeNull();
+                expect(queryByText('bread')).toBeNull();
+                expect(queryByText('milk')).toBeNull();
+                expect(queryByText('carrots')).toBeNull();
             });
         });
 
@@ -304,13 +318,9 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole} = setUpRender();
 
-            const deleteBreadButton = await rend.findByRole('deleteItem');
+            const deleteBreadButton = await findByRole('deleteItem');
             expect(deleteBreadButton).toBeInTheDocument();
         });
 
@@ -323,20 +333,16 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole, findByText, getByText} = setUpRender();
 
-            const deleteBreadButton = await rend.findByRole('deleteItem');
+            const deleteBreadButton = await findByRole('deleteItem');
             await fireEvent.click(deleteBreadButton);
-            const cancelButton = await rend.findByText("Cancel");
+            const cancelButton = await findByText("Cancel");
 
             await fireEvent.click(cancelButton);
 
-            expect(rend.getByText("bread")).toBeInTheDocument();
-            expect(rend.getByText("5")).toBeInTheDocument();
+            expect(getByText("bread")).toBeInTheDocument();
+            expect(getByText("5")).toBeInTheDocument();
         });
 
         it("should delete an item if the user accept to delete the item", async () => {
@@ -348,26 +354,31 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole, findByText, queryByText} = setUpRender();
 
-            const deleteBreadButton = await rend.findByRole('deleteItem');
+            const deleteBreadButton = await findByRole('deleteItem');
             shoppingList = new Array<ShoppingListItem>();
             await fireEvent.click(deleteBreadButton);
-            const acceptButton = await rend.findByText("Accept");
+            const acceptButton = await findByText("Accept");
 
             await fireEvent.click(acceptButton);
 
             await waitFor(() => {
-                expect(rend.queryByText("bread")).toBeNull();
+                expect(queryByText("bread")).toBeNull();
             });
         });
     });
 
-    describe("items are updated", () => {
+    describe("items are updated", () => {        
+
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
+        afterEach(() => {
+            jest.resetAllMocks();
+        });
+
         it("should have a button to decrease the quantity but disable if the quantity is 1", async () => {
             const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
             shoppingList.push(new ShoppingListItem("bread", 1));
@@ -376,13 +387,9 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole} = setUpRender();
 
-            const decreaseItemButton = await rend.findByRole('decreaseQuantity');
+            const decreaseItemButton = await findByRole('decreaseQuantity');
             expect(decreaseItemButton).toBeInTheDocument();
             expect(decreaseItemButton).toBeDisabled();
         });
@@ -395,13 +402,9 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole} = setUpRender();
 
-            const decreaseItemButton = await rend.findByRole('decreaseQuantity');
+            const decreaseItemButton = await findByRole('decreaseQuantity');
             expect(decreaseItemButton).toBeInTheDocument();
             expect(decreaseItemButton).toBeEnabled();
         });
@@ -414,13 +417,9 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole} = setUpRender();
 
-            const increaseItemButton = await rend.findByRole('increaseQuantity');
+            const increaseItemButton = await findByRole('increaseQuantity');
             expect(increaseItemButton).toBeInTheDocument();
             expect(increaseItemButton).toBeEnabled();
         });
@@ -441,18 +440,14 @@ describe('Shopping list', () => {
                 return updatedItem;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });
+            const {findByRole, findByText, getByText} = setUpRender();
 
-            const increaseItemButton = await rend.findByRole('increaseQuantity');
+            const increaseItemButton = await findByRole('increaseQuantity');
 
             await fireEvent.click(increaseItemButton);
-            
-            expect(await rend.findByText('6')).toBeInTheDocument();            
-            expect(rend.getByText('bread')).toBeInTheDocument();            
+
+            expect(await findByText('6')).toBeInTheDocument();
+            expect(getByText('bread')).toBeInTheDocument();
         });
 
         it("should decrease the quantity when the + button is clicked", async () => {
@@ -471,17 +466,13 @@ describe('Shopping list', () => {
                 return updatedItem;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });         
+            const {findByRole, findByText, getByText} = setUpRender();
 
-            const decreaseItemButton = await rend.findByRole('decreaseQuantity');
+            const decreaseItemButton = await findByRole('decreaseQuantity');
             await fireEvent.click(decreaseItemButton);
 
-            expect(await rend.findByText('4')).toBeInTheDocument();
-            expect(rend.getByText('bread')).toBeInTheDocument();
+            expect(await findByText('4')).toBeInTheDocument();
+            expect(getByText('bread')).toBeInTheDocument();
         });
 
         it("should change the name when the edit button is clicked", async () => {
@@ -503,21 +494,17 @@ describe('Shopping list', () => {
                 return updatedItem;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });          
+            const {findByRole, findByText, getByText} = setUpRender();
 
-            let editItemButton = await rend.findByRole('editItem');
+            let editItemButton = await findByRole('editItem');
             await fireEvent.click(editItemButton);
-            let inputEdit = await rend.findByRole('nameInput');
-            await fireEvent.input(inputEdit, { target: { value: 'milk' } });            
-            let acceptButton = await rend.findByText("Accept");
+            let inputEdit = await findByRole('nameInput');
+            await fireEvent.input(inputEdit, { target: { value: 'milk' } });
+            let acceptButton = await findByText("Accept");
             await fireEvent.click(acceptButton);
 
-            expect(await rend.findByText('milk')).toBeInTheDocument();            
-            expect(rend.getByText('5')).toBeInTheDocument();            
+            expect(await findByText('milk')).toBeInTheDocument();
+            expect(getByText('5')).toBeInTheDocument();
         });
 
         it("should not be able to change the name when the name don't match with the validation", async () => {
@@ -539,22 +526,18 @@ describe('Shopping list', () => {
                 return updatedItem;
             }));
 
-            rend = render(ShoppingList as any, {
-                propsData: {
-                    appService: appService
-                }
-            });          
+            const {findByRole, findByText, getByText} = setUpRender();
 
-            let editItemButton = await rend.findByRole('editItem');
+            let editItemButton = await findByRole('editItem');
             await fireEvent.click(editItemButton);
 
-            let inputEdit = await rend.findByRole('nameInput');
+            let inputEdit = await findByRole('nameInput');
             await fireEvent.input(inputEdit, { target: { value: '2' } });
 
-            let acceptButton = await rend.findByText("Accept");
+            let acceptButton = await findByText("Accept");
 
             expect(acceptButton).toBeDisabled();
-            expect(rend.getByText("The text must start with A-Z, a-z or a number but no spaces before the first character")).toBeInTheDocument();
+            expect(getByText("The text must start with A-Z, a-z or a number but no spaces before the first character")).toBeInTheDocument();
         });
     });
 });
