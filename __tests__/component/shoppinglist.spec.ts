@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, RenderResult, getByText } from '@testing-library/vue';
+import { render, fireEvent, waitFor, RenderResult, queryByText } from '@testing-library/vue';
 import '@testing-library/jest-dom'
 import ShoppingList from '@/components/ShoppingList.vue';
 import AppService from '@/appservices/AppService';
@@ -38,15 +38,14 @@ describe('Shopping list', () => {
         });
 
         it("should have a button to add items", () => {
-
             const addItemButton = rend.getByRole('addButton');
 
             expect(addItemButton).toBeInTheDocument();
         });
 
-        it("should disable the button when the input is empty", () => {
+        it("should disable the button when the input is empty", async () => {
             const input = rend.getByRole('itemInput');
-            fireEvent.input(input, { target: { value: '' } });
+            await fireEvent.input(input, { target: { value: '' } });
 
             const addItemButton = rend.getByRole('addButton');
 
@@ -65,35 +64,29 @@ describe('Shopping list', () => {
 
             const addItemButton = rend.getByRole('addButton');
 
-            await waitFor(async () => {
-                expect(input).toHaveValue(param);
-                expect(addItemButton).toBeDisabled();
-                expect(rend.getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
-            });
+            expect(input).toHaveValue(param);
+            expect(await rend.findByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
+            expect(addItemButton).toBeDisabled();
         });
 
-        it("should enable the button when the input is not empty", () => {
+        it("should enable the button when the input is not empty", async () => {
             const input = rend.getByRole('itemInput');
-            fireEvent.input(input, { target: { value: 'bread' } });
+            await fireEvent.input(input, { target: { value: 'bread' } });
 
             const addItemButton = rend.getByRole('addButton');
 
             expect(input).toHaveValue();
-            waitFor(() => {
-                expect(addItemButton).toBeEnabled();
-            })
+            expect(addItemButton).toBeEnabled();
         });
 
         it("should not have any value in the input when the button is clicked", async () => {
             const input = rend.getByRole('itemInput');
-            fireEvent.input(input, { target: { value: 'bread' } });
+            await fireEvent.input(input, { target: { value: 'bread' } });
             const addItemButton = rend.getByRole('addButton');
 
-            fireEvent.click(addItemButton);
+            await fireEvent.click(addItemButton);
 
-            await waitFor(() => {
-                expect(input).not.toHaveValue();
-            })
+            expect(input).not.toHaveValue();
         });
 
         it("should shown the headers of the Shopping list empty when there is not elements", async () => {
@@ -118,16 +111,14 @@ describe('Shopping list', () => {
                 resolve(shoppingList);
                 return shoppingList;
             }));
-            const input = await rend.getByRole('itemInput');
+            const input = rend.getByRole('itemInput');
             await fireEvent.input(input, { target: { value: 'bread' } });
             const addItemButton = rend.getByRole('addButton');
 
             await fireEvent.click(addItemButton);
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('1')).toBeInTheDocument();
-            });
+            expect(await rend.findByText('bread')).toBeInTheDocument();
+            expect(rend.getByText('1')).toBeInTheDocument();
         });
     });
 
@@ -161,7 +152,6 @@ describe('Shopping list', () => {
                 }
             });
 
-            //await flushPromises();                        
             const deleteAllButton = rend.getByRole('deleteAllButton');
             expect(deleteAllButton).toBeInTheDocument();
             await waitFor(() => {
@@ -169,7 +159,7 @@ describe('Shopping list', () => {
             });
         });
 
-        it("should stop showing the question form if the user refuse delete all", async () => {
+        it("should show the question form if the user click on delete all", async () => {
             const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
             shoppingList.push(new ShoppingListItem("bread", 5));
             shoppingList.push(new ShoppingListItem("milk", 3));
@@ -192,13 +182,31 @@ describe('Shopping list', () => {
                 questionForm = rend.getByRole('questionForm')
                 expect(questionForm).toBeInTheDocument();
             });
+        });
+
+
+        it("should stop showing the question form if the user refuse delete all", async () => {
+            const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            shoppingList.push(new ShoppingListItem("bread", 5));
+            shoppingList.push(new ShoppingListItem("milk", 3));
+            shoppingList.push(new ShoppingListItem("carrots", 6));
+            appService.getItems = jest.fn(() => new Promise((resolve) => {
+                resolve(shoppingList);
+                return shoppingList;
+            }));
+
+            rend = render(ShoppingList as any, {
+                propsData: {
+                    appService: appService
+                }
+            });
+
+            const deleteAllButton = rend.getByRole('deleteAllButton');
+            await fireEvent.click(deleteAllButton);
 
             const cancelButton = rend.getByText("Cancel");
             await fireEvent.click(cancelButton);
-
-            await waitFor(() => {
-                expect(questionForm).not.toBeInTheDocument();
-            });
+            expect(rend.queryByRole('questionForm')).toBeNull();
         });
 
         it("should, if the user refuse delete all, and not delete anything", async () => {
@@ -222,14 +230,12 @@ describe('Shopping list', () => {
             const cancelButton = rend.getByText("Cancel");
             await fireEvent.click(cancelButton);
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('5')).toBeInTheDocument();
-                expect(rend.getByText('milk')).toBeInTheDocument();
-                expect(rend.getByText('3')).toBeInTheDocument();
-                expect(rend.getByText('carrots')).toBeInTheDocument();
-                expect(rend.getByText('6')).toBeInTheDocument();
-            });
+            expect(rend.getByText('bread')).toBeInTheDocument();
+            expect(rend.getByText('5')).toBeInTheDocument();
+            expect(rend.getByText('milk')).toBeInTheDocument();
+            expect(rend.getByText('3')).toBeInTheDocument();
+            expect(rend.getByText('carrots')).toBeInTheDocument();
+            expect(rend.getByText('6')).toBeInTheDocument();
         });
 
         it("should stop showing the question form if the user accept delete all", async () => {
@@ -247,21 +253,13 @@ describe('Shopping list', () => {
                     appService: appService
                 }
             });
-
             const deleteAllButton = rend.getByRole('deleteAllButton');
+
             await fireEvent.click(deleteAllButton);
-            let questionForm: HTMLElement;
-            await waitFor(() => {
-                questionForm = rend.getByRole('questionForm')
-                expect(questionForm).toBeInTheDocument();
-            });
 
             const acceptButton = rend.getByText("Accept");
             await fireEvent.click(acceptButton);
-
-            await waitFor(() => {
-                expect(questionForm).not.toBeInTheDocument();
-            });
+            expect(rend.queryByRole('questionForm')).toBeNull();
         });
 
         it("should delete all if the user accept delete all", async () => {
@@ -281,32 +279,19 @@ describe('Shopping list', () => {
                 }
             });
 
-            let bread: HTMLElement;
-            let milk: HTMLElement;
-            let carrots: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-                milk = rend.getByText('milk');
-                carrots = rend.getByText('carrots');
-            });
-
             shoppingList = new Array<ShoppingListItem>();
 
             const deleteAllButton = rend.getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
-            let questionForm: HTMLElement;
-            await waitFor(() => {
-                questionForm = rend.getByRole('questionForm')
-                expect(questionForm).toBeInTheDocument();
-            });
+            const acceptButton = await rend.findByText("Accept");
 
-            const acceptButton = rend.getByText("Accept");
             await fireEvent.click(acceptButton);
+
             expect(appService.deleteAll).toBeCalledTimes(1);
             await waitFor(() => {
-                expect(bread).not.toBeInTheDocument();
-                expect(milk).not.toBeInTheDocument();
-                expect(carrots).not.toBeInTheDocument();
+                expect(rend.queryByText('bread')).toBeNull();
+                expect(rend.queryByText('milk')).toBeNull();
+                expect(rend.queryByText('carrots')).toBeNull();
             });
         });
 
@@ -325,12 +310,7 @@ describe('Shopping list', () => {
                 }
             });
 
-            let bread: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-            });
-
-            const deleteBreadButton = rend.getByRole('deleteItem');
+            const deleteBreadButton = await rend.findByRole('deleteItem');
             expect(deleteBreadButton).toBeInTheDocument();
         });
 
@@ -349,24 +329,14 @@ describe('Shopping list', () => {
                 }
             });
 
-            let bread: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-            });
-
-            const deleteBreadButton = rend.getByRole('deleteItem');
+            const deleteBreadButton = await rend.findByRole('deleteItem');
             await fireEvent.click(deleteBreadButton);
-            let questionForm: HTMLElement;
-            await waitFor(() => {
-                questionForm = rend.getByRole('questionForm')
-                expect(questionForm).toBeInTheDocument();
-            });
+            const cancelButton = await rend.findByText("Cancel");
 
-            const cancelButton = rend.getByText("Cancel");
             await fireEvent.click(cancelButton);
-            await waitFor(() => {
-                expect(bread).toBeInTheDocument();
-            });
+
+            expect(rend.getByText("bread")).toBeInTheDocument();
+            expect(rend.getByText("5")).toBeInTheDocument();
         });
 
         it("should delete an item if the user accept to delete the item", async () => {
@@ -384,24 +354,15 @@ describe('Shopping list', () => {
                 }
             });
 
-            let bread: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-            });
-
-            const deleteBreadButton = rend.getByRole('deleteItem');
+            const deleteBreadButton = await rend.findByRole('deleteItem');
             shoppingList = new Array<ShoppingListItem>();
             await fireEvent.click(deleteBreadButton);
-            let questionForm: HTMLElement;
-            await waitFor(() => {
-                questionForm = rend.getByRole('questionForm')
-                expect(questionForm).toBeInTheDocument();
-            });
+            const acceptButton = await rend.findByText("Accept");
 
-            const acceptButton = rend.getByText("Accept");
             await fireEvent.click(acceptButton);
+
             await waitFor(() => {
-                expect(bread).not.toBeInTheDocument();
+                expect(rend.queryByText("bread")).toBeNull();
             });
         });
     });
@@ -420,12 +381,8 @@ describe('Shopping list', () => {
                     appService: appService
                 }
             });
-            let bread: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-            });
 
-            const decreaseItemButton = rend.getByRole('decreaseQuantity');
+            const decreaseItemButton = await rend.findByRole('decreaseQuantity');
             expect(decreaseItemButton).toBeInTheDocument();
             expect(decreaseItemButton).toBeDisabled();
         });
@@ -443,12 +400,8 @@ describe('Shopping list', () => {
                     appService: appService
                 }
             });
-            let bread: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-            });
 
-            const decreaseItemButton = rend.getByRole('decreaseQuantity');
+            const decreaseItemButton = await rend.findByRole('decreaseQuantity');
             expect(decreaseItemButton).toBeInTheDocument();
             expect(decreaseItemButton).toBeEnabled();
         });
@@ -466,12 +419,8 @@ describe('Shopping list', () => {
                     appService: appService
                 }
             });
-            let bread: HTMLElement;
-            await waitFor(() => {
-                bread = rend.getByText('bread');
-            });
 
-            const increaseItemButton = rend.getByRole('increaseQuantity');
+            const increaseItemButton = await rend.findByRole('increaseQuantity');
             expect(increaseItemButton).toBeInTheDocument();
             expect(increaseItemButton).toBeEnabled();
         });
@@ -498,18 +447,12 @@ describe('Shopping list', () => {
                 }
             });
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('5')).toBeInTheDocument();
-            });
+            const increaseItemButton = await rend.findByRole('increaseQuantity');
 
-            const increaseItemButton = rend.getByRole('increaseQuantity');
             await fireEvent.click(increaseItemButton);
-
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('6')).toBeInTheDocument();
-            });
+            
+            expect(await rend.findByText('6')).toBeInTheDocument();            
+            expect(rend.getByText('bread')).toBeInTheDocument();            
         });
 
         it("should decrease the quantity when the + button is clicked", async () => {
@@ -532,20 +475,13 @@ describe('Shopping list', () => {
                 propsData: {
                     appService: appService
                 }
-            });
+            });         
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('5')).toBeInTheDocument();
-            });
-
-            const decreaseItemButton = rend.getByRole('decreaseQuantity');
+            const decreaseItemButton = await rend.findByRole('decreaseQuantity');
             await fireEvent.click(decreaseItemButton);
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('4')).toBeInTheDocument();
-            });
+            expect(await rend.findByText('4')).toBeInTheDocument();
+            expect(rend.getByText('bread')).toBeInTheDocument();
         });
 
         it("should change the name when the edit button is clicked", async () => {
@@ -571,27 +507,17 @@ describe('Shopping list', () => {
                 propsData: {
                     appService: appService
                 }
-            });
+            });          
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('5')).toBeInTheDocument();
-            });
-
-            let editItemButton = rend.getByRole('editItem');
+            let editItemButton = await rend.findByRole('editItem');
             await fireEvent.click(editItemButton);
-
-            let inputEdit = rend.getByRole('nameInput');
-            await fireEvent.input(inputEdit, { target: { value: 'milk' } });
-
-            await flushPromises();
-            let acceptButton = rend.getByText("Accept");
+            let inputEdit = await rend.findByRole('nameInput');
+            await fireEvent.input(inputEdit, { target: { value: 'milk' } });            
+            let acceptButton = await rend.findByText("Accept");
             await fireEvent.click(acceptButton);
 
-            await waitFor(() => {
-                expect(rend.getByText('milk')).toBeInTheDocument();
-                expect(rend.getByText('5')).toBeInTheDocument();
-            });
+            expect(await rend.findByText('milk')).toBeInTheDocument();            
+            expect(rend.getByText('5')).toBeInTheDocument();            
         });
 
         it("should not be able to change the name when the name don't match with the validation", async () => {
@@ -617,21 +543,15 @@ describe('Shopping list', () => {
                 propsData: {
                     appService: appService
                 }
-            });
+            });          
 
-            await waitFor(() => {
-                expect(rend.getByText('bread')).toBeInTheDocument();
-                expect(rend.getByText('5')).toBeInTheDocument();
-            });
-
-            let editItemButton = rend.getByRole('editItem');
+            let editItemButton = await rend.findByRole('editItem');
             await fireEvent.click(editItemButton);
 
-            let inputEdit = rend.getByRole('nameInput');
+            let inputEdit = await rend.findByRole('nameInput');
             await fireEvent.input(inputEdit, { target: { value: '2' } });
 
-
-            let acceptButton = rend.getByText("Accept");
+            let acceptButton = await rend.findByText("Accept");
 
             expect(acceptButton).toBeDisabled();
             expect(rend.getByText("The text must start with A-Z, a-z or a number but no spaces before the first character")).toBeInTheDocument();

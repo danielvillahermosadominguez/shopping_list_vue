@@ -170,10 +170,10 @@ describe('Shopping list acceptance tests', () => {
     const increaseItemButton = await rend.findByRole('increaseQuantity');
     await fireEvent.click(increaseItemButton);    
 
-    await waitFor(() => {
-      expect(rend.getByText('bread')).toBeInTheDocument();
+    await waitFor(() => {      
       expect(rend.queryByText('5')).toBeNull();
       expect(rend.getByText('6')).toBeInTheDocument();
+      expect(rend.getByText('bread')).toBeInTheDocument();
     });
   })
 

@@ -197,6 +197,7 @@ BUGS/PROBLEMS:
 - script to run the fixtureServiceMemoryStorage
 - change in the name of the test folder: __tests__
 - refactoring of acceptance tests
+- refactoring of component tests
   
 -Next steps are:      
   - flacky tests again after refactoring. I removed some unnecesary asserts
@@ -211,4 +212,5 @@ BUGS/PROBLEMS:
   - Common styles for all the application
   - Use the controls vuetify
   - features toggle with configcat
+  - BDD for acceptance tests
 
