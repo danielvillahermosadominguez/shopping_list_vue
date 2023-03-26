@@ -12,8 +12,8 @@
                             <input id="update_name" type="text" role="nameInput" v-model="updatedItem.name" />
                             <br>
                             <div>
-                                <p v-if="error !== ''" class="error">{{ error }}</p>
-                                <p v-else class="info">For example: Jam</p>
+                                <span v-if="error !== ''" class="error">{{ error }}</span>
+                                <span v-else class="info">For example: Jam</span>
                                 <br />
                             </div>
                         </label>

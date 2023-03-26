@@ -221,11 +221,13 @@ BUGS/PROBLEMS:
 
 26/03/2023
 - Sonarqube configuration in Github actions
+- Validation in edit form doesn't work the style
+- i18n = for internalization
 
 -Next steps are:      
   - sometimes the fixture for acceptance tests don't finish correctly and we need to terminate the process
   - flacky tests again after refactoring. I removed some unnecesary asserts. Review it.
-  - Validation in edit form doesn't work the style
+  
   - Fix fields for the Table. The fields are adapted to the text and it is strange
   - Writing the readme and conclusions after the first feature.  + remember to include:
     - flush  
