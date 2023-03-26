@@ -1,7 +1,7 @@
 <template @new-item_has_been-added="refreshList()">
     <div class="hello">        
         <form>
-            <div style="float:left;margin-right:20px;">
+            <div style="float:left;margin-right:20px; width: 100%;">
                 <label for="input_text">
                     {{$t("shopping-list-please-write-the-name")}}                    
                     <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" data-error="hola" required/>
@@ -14,21 +14,21 @@
                     @ok="($event,args) => executeAction($event,args)" @cancel="cancelLastAction()"> </UpdateItemForm> 
                 <br>
                 <div>
-                    <p v-if="error !== ''" class="error">{{ error }}</p>
-                    <p v-else class="info" >{{$t("shopping-list-for-example")}}</p>
+                    <span v-if="error !== ''" class="error">{{ error }}</span>
+                    <span v-else class="info" >{{$t("shopping-list-for-example")}}</span>
                     <br />
                 </div>
                 <h1> {{$t("shopping-list-your-shopping-list")}}   </h1>
                 <table role="itemList" class="table">
                     <thead>
                         <tr class="tr">                           
-                            <th>
+                            <th style="width:60%">
                                 {{$t("shopping-list-item")}}                                
                             </th>
-                            <th>
+                            <th  style="width:20%">
                                 {{$t("shopping-list-quantity")}}                                
                             </th>
-                            <th>
+                            <th style="width:20%">
                                 {{$t("shopping-list-action")}}                                
                             </th>
                         </tr>
@@ -256,8 +256,9 @@ table {
     font-size: 12px;
     margin-left: auto;
     margin-right: auto;
-    text-align: left;
+    text-align: center;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 th {
@@ -270,7 +271,7 @@ th {
     border-right: 1px solid #fff;
     border-left: 1px solid #fff;
     color: #039;
-    font-weight: bold
+    font-weight: bold;        
 }
 
 td {
@@ -283,8 +284,7 @@ td {
     border-top: 1px solid transparent;
 }
 
-label {
-    display: block;
+label {    
     color: #039;
     font-weight: bold;
     display: block;
@@ -292,8 +292,7 @@ label {
     margin: 3px;
 }
 
-input {
-    display: block;
+input {    
     padding: 3px;
     margin: 3px;
     padding: 3px;
