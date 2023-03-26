@@ -198,13 +198,17 @@ BUGS/PROBLEMS:
 - change in the name of the test folder: __tests__
 - refactoring of acceptance tests
 - refactoring of component tests
-  
+- Factory for the fixture
+- Factory for the AppService
+- Load several configurations for acceptance tests
+
 -Next steps are:      
   - flacky tests again after refactoring. I removed some unnecesary asserts
   - Validation in edit form doesn't work the style
   - Fix fields for the Table. The fields are adapted to the text and it is strange
   - Writing the readme and conclusions after the first feature.  + remember to include:
     - flush  
+  - Increase the coverage for some classes. (Utilities and fixtures).
 - Parking lot:
   - resources for text in front (multilanguage)
   - ViewModel pattern.

@@ -2,9 +2,10 @@ import { Worker } from 'threads';
 import AppService from '@/appservices/AppService';
 import { WorkerImplementation } from 'threads/dist/types/master';
 import * as util from "util";
+import BackendServiceFixture from './BackendServiceFixture';
 
 const ERROR_MESSAGE_NOT_POSSIBLE_TO_CONTACT_WITH_SERVER = "Not possible to contact with server fixture with timeout of %s seconds";
-export class BackendScriptServiceFixture {
+export class BackendScriptServiceFixture implements BackendServiceFixture {
     private worker: WorkerImplementation | undefined;
     private _appService: AppService;
     private timeOut: number;

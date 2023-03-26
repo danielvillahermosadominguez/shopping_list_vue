@@ -1,13 +1,21 @@
-import { render, fireEvent, waitFor, RenderResult, queryByText } from '@testing-library/vue';
+import { render, fireEvent, waitFor, RenderResult} from '@testing-library/vue';
 import '@testing-library/jest-dom'
 import ShoppingList from '@/components/ShoppingList.vue';
-import AppService from '@/appservices/AppService';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
-jest.mock('@/appservices/AppService');
+
+const appServiceMock=   {
+    add: {},
+    getItems: {},
+    deleteAll: {},
+    deleteItem: {},
+    updateItem: {},
+    serverIsReady: {},
+};
+
 
 describe('Shopping list', () => {
     let rend: RenderResult;
-    let appService = new AppService();
+    let appService = appServiceMock;
     const setUpRender = () => {
         return render(ShoppingList as any, {
             propsData: {
@@ -18,7 +26,7 @@ describe('Shopping list', () => {
 
     describe("the initial screen is showed", () => {
         beforeEach(() => {
-            jest.resetAllMocks();
+            jest.resetAllMocks();            
             appService.add = jest.fn(() => new Promise(jest.fn()));
             appService.getItems = jest.fn(() => new Promise(() => []));
             // eslint-disable-next-line
@@ -260,7 +268,7 @@ describe('Shopping list', () => {
             expect(getByText('6')).toBeInTheDocument();
         });
 
-        it("should(showing the question form if the user accept delete all", async () => {
+        it("should  hide the question form if the user accept delete all", async () => {
             const shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
             shoppingList.push(new ShoppingListItem("bread", 5));
             shoppingList.push(new ShoppingListItem("milk", 3));
@@ -270,14 +278,18 @@ describe('Shopping list', () => {
                 return shoppingList;
             }));
 
-            const {queryByRole, getByRole, getByText} = setUpRender();
+            appService.deleteAll = jest.fn();
+
+            const {queryByRole, getByRole, findByText} = setUpRender();
             const deleteAllButton = getByRole('deleteAllButton');
 
             await fireEvent.click(deleteAllButton);
 
-            const acceptButton = getByText("Accept");
+            const acceptButton = await findByText("Accept");
             await fireEvent.click(acceptButton);
-            expect(queryByRole('questionForm')).toBeNull();
+            await waitFor(()=>{
+                expect(queryByRole('questionForm')).toBeNull();
+            });
         });
 
         it("should delete all if the user accept delete all", async () => {
@@ -346,18 +358,17 @@ describe('Shopping list', () => {
         });
 
         it("should delete an item if the user accept to delete the item", async () => {
-            appService.deleteAll = jest.fn();
             let shoppingList: Array<ShoppingListItem> = new Array<ShoppingListItem>();
+            appService.deleteItem = jest.fn(()=> shoppingList = new Array<ShoppingListItem>());
             shoppingList.push(new ShoppingListItem("bread", 5));
             appService.getItems = jest.fn(() => new Promise((resolve) => {
                 resolve(shoppingList);
                 return shoppingList;
-            }));
+            }));            
 
             const {findByRole, findByText, queryByText} = setUpRender();
 
-            const deleteBreadButton = await findByRole('deleteItem');
-            shoppingList = new Array<ShoppingListItem>();
+            const deleteBreadButton = await findByRole('deleteItem');            
             await fireEvent.click(deleteBreadButton);
             const acceptButton = await findByText("Accept");
 
@@ -436,7 +447,7 @@ describe('Shopping list', () => {
                 shoppingList = [];
                 const updatedItem = new ShoppingListItem(item.name, item.quantity)
                 shoppingList.push(updatedItem);
-                resolve();
+                resolve(undefined);
                 return updatedItem;
             }));
 
@@ -462,7 +473,7 @@ describe('Shopping list', () => {
                 shoppingList = [];
                 const updatedItem = new ShoppingListItem(item.name, item.quantity)
                 shoppingList.push(updatedItem);
-                resolve();
+                resolve(undefined);
                 return updatedItem;
             }));
 
@@ -490,7 +501,7 @@ describe('Shopping list', () => {
                 const updatedItem = new ShoppingListItem(item.name, item.quantity)
                 updatedItem.id = item.id;
                 shoppingList.push(updatedItem);
-                resolve();
+                resolve(undefined);
                 return updatedItem;
             }));
 
@@ -522,7 +533,7 @@ describe('Shopping list', () => {
                 const updatedItem = new ShoppingListItem(item.name, item.quantity)
                 updatedItem.id = item.id;
                 shoppingList.push(updatedItem);
-                resolve();
+                resolve(undefined);
                 return updatedItem;
             }));
 

@@ -1,16 +1,16 @@
 import { render, fireEvent, waitFor } from '@testing-library/vue';
 import AppService from '@/appservices/AppService';
 import '@testing-library/jest-dom';
-import { BackendScriptServiceFixture } from '@/apolloserver/backendscriptservicefixture';
 import HomeView from '@/views/HomeView.vue';
 import ShoppingListItem from '@/appservices/ShoppingListItem';
 import '@/environment/loadvariables';
 import { FactoryServiceFixture } from '@/apolloserver/fixtureServiceFactory';
+import BackendServiceFixture from '@/apolloserver/BackendServiceFixture';
 
 describe('Shopping list acceptance tests', () => {
   const TEMPORAL_MAXIMUM_DELAY_FOR_JEST_TO_WAIT_FIXTURE = 10000;
   const DEFAULT_DELAY_FOR_JEST = 10000;
-  const serviceFixture: BackendScriptServiceFixture = FactoryServiceFixture.createBasedOnConfiguration();
+  const serviceFixture: BackendServiceFixture = FactoryServiceFixture.createBasedOnConfiguration();
   const appService: AppService = serviceFixture.appService;
 
 
@@ -197,7 +197,7 @@ describe('Shopping list acceptance tests', () => {
     await waitFor(async () => {
       expect(getByText('milk')).toBeInTheDocument();
       expect(getByText('carrots')).toBeInTheDocument();
-      expect(queryByText('RANDOM_ITEM')).toBeNull();
+      expect(getByText('RANDOM_ITEM')).toBeInTheDocument();
     });
   })
 

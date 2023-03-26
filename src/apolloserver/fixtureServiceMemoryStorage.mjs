@@ -1,4 +1,4 @@
-import { gql, ApolloServer, UserInputError} from 'apollo-server'
+import { gql, ApolloServer} from 'apollo-server'
 import { v1 as uuid } from 'uuid'
 
 const shoppingLists = []
