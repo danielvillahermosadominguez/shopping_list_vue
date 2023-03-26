@@ -460,3 +460,8 @@ test("Some test name", () => {
 
 #Integrate Sonarcloud with github actions
 https://github.com/SonarSource/sonarcloud-github-action
+
+STeps : to be developed. And the problems and solutions:
+
+error:You are running CI analysis while Automatic Analysis is enabled. Please consider disabling one or the other.
+https://community.sonarsource.com/t/sonarcloud-task-fails-because-of-ci-analysis-and-auto-analysis-running/22937

@@ -218,3 +218,23 @@ BUGS/PROBLEMS:
   - features toggle with configcat
   - BDD for acceptance tests
 
+
+26/03/2023
+- Sonarqube configuration in Github actions
+
+-Next steps are:      
+  - flacky tests again after refactoring. I removed some unnecesary asserts. Review it.
+  - Validation in edit form doesn't work the style
+  - Fix fields for the Table. The fields are adapted to the text and it is strange
+  - Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush  
+  - Increase the coverage for some classes. (Utilities and fixtures).
+- Parking lot:
+  - resources for text in front (multilanguage)
+  - ViewModel pattern.
+  - Login
+  - Common styles for all the application
+  - Use the controls vuetify
+  - features toggle with configcat
+  - BDD for acceptance tests
+
