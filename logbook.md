@@ -224,19 +224,29 @@ BUGS/PROBLEMS:
 - Validation in edit form doesn't work the style
 - i18n = for internalization
 - Fix fields for the Table. The fields are adapted to the text and it is strange
-- 
--Next steps are:      
-  - sometimes the fixture for acceptance tests don't finish correctly and we need to terminate the process
-  - flacky tests again after refactoring. I removed some unnecesary asserts. Review it.  
-  - Writing the readme and conclusions after the first feature.  + remember to include:
-    - flush  
-  - Increase the coverage for some classes. (Utilities and fixtures).
-- Parking lot:
-  - resources for text in front (multilanguage)
-  - ViewModel pattern.
-  - Login
-  - Common styles for all the application
-  - Use the controls vuetify
-  - features toggle with configcat
-  - BDD for acceptance tests
+- description of the kata in the about
+  
+-Next steps are:          
+
+  -[First Pilot] Writing the readme and conclusions after the first feature.  + remember to include:
+    - flush   
+  -[First Pilot] Review - Feedback session
+- Some requirements we haven't implemented yet:
+  - Maximum number of rows (pagination) - we don't haver persistency -> mvp 2
+  - Login and a list for each user - users don't need to login now -> mvp 2
+
+- Backlog:
+  - [MVP 1.0] Implementation of AppService with the own storage. A way to deploy and use the App. And also, we can study the storage.
+  - [MVP 1.0] Deployment in Azure.
+  - [MVP 1.0] ViewModel pattern.
+  - [MVP 1.0] Login
+  - [MVP 1.0] BDD for acceptance tests
+  - [Tech debt] Increase the coverage for some classes. (Utilities and fixtures).
+  - [Tech debt] flacky tests again after refactoring. I removed some unnecesary asserts. Review it.  
+  - [Tech debt] sometimes the fixture for acceptance tests don't finish correctly and we need to terminate the process    
+  - [Tech debt] Common styles for all the application
+  - [MVP 2.0] Maximum number of rows (pagination)
+  - [MVP 2.0] Use the controls vuetify - Include real backend in spring boot
+  - [MVP 2.0]features toggle with configcat - Include real backend in spring boot
+  
 

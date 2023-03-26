@@ -28,7 +28,7 @@ describe('Shopping list acceptance tests', () => {
 
   afterAll(() => {
     serviceFixture.disposeFixture();
-  });
+  });  
 
   it(`Given a list with elements
            When the user load the page           
