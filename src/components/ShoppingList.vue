@@ -3,12 +3,11 @@
         <form>
             <div style="float:left;margin-right:20px;">
                 <label for="input_text">
-                    Please, write the name of the item:
+                    {{$t("shopping-list-please-write-the-name")}}                    
                     <input id="input_text" name="input_text" type="text" role="itemInput" v-model="inputValue" data-error="hola" required/>
                 </label>                
-                <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">add item</button>
-                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">delete all
-                    items</button>
+                <button role="addButton" :disabled="!isValidInput()" v-on:click="addItem">{{$t("shopping-list-add-item")}}</button>
+                <button role="deleteAllButton" :disabled="!canIDeleteAtLeastOne()" v-on:click="askToDeleteAll()">{{$t("shopping-list-delete-all")}}</button>
                 <ContinueQuestion id="questionForm" role="questionForm" v-if="showModal" header="" :question="modalMessage"
                     @ok="executeAction($event)" @cancel="cancelLastAction()"> </ContinueQuestion>                                
                 <UpdateItemForm id="editForm" role="editForm" v-if="showEdit" header="" :item="actionArgument"
@@ -16,21 +15,21 @@
                 <br>
                 <div>
                     <p v-if="error !== ''" class="error">{{ error }}</p>
-                    <p v-else class="info" >For example: Jam</p>
+                    <p v-else class="info" >{{$t("shopping-list-for-example")}}</p>
                     <br />
                 </div>
-                <h1>Your shopping list</h1>
+                <h1> {{$t("shopping-list-your-shopping-list")}}   </h1>
                 <table role="itemList" class="table">
                     <thead>
                         <tr class="tr">                           
                             <th>
-                                Item
+                                {{$t("shopping-list-item")}}                                
                             </th>
                             <th>
-                                Quantity
+                                {{$t("shopping-list-quantity")}}                                
                             </th>
                             <th>
-                                Action
+                                {{$t("shopping-list-action")}}                                
                             </th>
                         </tr>
                     </thead>
@@ -65,6 +64,7 @@ import { defineComponent } from 'vue';
 import ContinueQuestion from './ContinueQuestion.vue';
 import UpdateItemForm from './UpdateItemForm.vue';
 import NameValidator from '@/validators/namevalidator';
+import * as util from 'util';
 const emptyShoppingItem = new ShoppingListItem();
 enum Actions {
     none,
@@ -116,12 +116,12 @@ export default defineComponent({
             this.showEdit = true;
         },
         askToDeleteAll() {
-            this.modalMessage = "You are going to delete all the items. Are you sure?";
+            this.modalMessage = this.$t("shopping-list-delete-all-message") as string;
             this.action = Actions.deleteAll;            
             this.showModal = true;
         },
-        askToDeleteOne(item: ShoppingListItem) {            
-            this.modalMessage = `You are going to remove the item ${item.name}. Are you sure?`;
+        askToDeleteOne(item: ShoppingListItem) {                        
+            this.modalMessage = util.format(this.$t("shopping-list-you-are-going-to-remove-one-item"), item.name);
             this.action = Actions.deleteSelectedItem;            
             this.actionArgument = item;
             this.showModal = true;
@@ -177,7 +177,7 @@ export default defineComponent({
             const result:boolean = this.validator.isShoppingListItemNameCorrect(this.$data.inputValue);            
 
             if(!result) {
-                this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
+                this.$data.error = this.$t("validation-the_text_must_start") as string;
                 return false;
             }            
             this.$data.error = "";

@@ -475,3 +475,25 @@ npm i -D --save-dev jest-sonar-reporter
 ```
 
 and for the customization: https://www.npmjs.com/package/jest-sonar-reporter
+
+
+# Multi-language app with Vue
+https://phrase.com/blog/posts/vue-2-localization/
+https://blog.flycode.com/step-by-step-how-to-create-a-vue-multi-language-app-with-vue-i18n
+```
+vue add i18n
+
+```
+
+#The problem for util y vue
+https://stackoverflow.com/questions/64402821/module-not-found-error-cant-resolve-util-in-webpack
+
+npm install --save-dev node-polyfill-webpack-plugin
+
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+
+module.exports = {
+  chainWebpack: (config) => {
+    config.plugin("polyfills").use(NodePolyfillPlugin);
+  },
+};

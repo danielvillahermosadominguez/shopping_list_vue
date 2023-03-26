@@ -12,6 +12,7 @@ const appServiceMock=   {
     serverIsReady: {},
 };
 
+const $t = (s:string) => s;
 
 describe('Shopping list', () => {
     let rend: RenderResult;
@@ -19,11 +20,12 @@ describe('Shopping list', () => {
     const setUpRender = () => {
         return render(ShoppingList as any, {
             propsData: {
-                appService: appService
-            }
+                appService: appService,
+            },            
+            mocks:{ $t }
         });
     };
-
+    
     describe("the initial screen is showed", () => {
         beforeEach(() => {
             jest.resetAllMocks();            
@@ -33,7 +35,8 @@ describe('Shopping list', () => {
             rend = render(ShoppingList as any, {
                 propsData: {
                     appService: appService
-                }
+                },
+                mocks:{ $t }
             });
         });
 
@@ -52,7 +55,7 @@ describe('Shopping list', () => {
 
         it("should have a label with describing the input", () => {
             const { getByLabelText } = rend;
-            const input = getByLabelText('Please, write the name of the item:');
+            const input = getByLabelText($t("shopping-list-please-write-the-name"));
 
             expect(input).toBeInTheDocument();
             expect(input).not.toHaveValue();
@@ -61,8 +64,8 @@ describe('Shopping list', () => {
 
         it("should shown the headers of the Shopping list empty when there is not elements", async () => {
             const { queryAllByText } = rend;
-            const itemHeader = queryAllByText('Item');
-            const quantityHeader = queryAllByText('Quantity');
+            const itemHeader = queryAllByText($t("shopping-list-item"));
+            const quantityHeader = queryAllByText($t("shopping-list-quantity"));
 
             expect(itemHeader.length).toBe(1);
             expect(quantityHeader.length).toBe(1);
@@ -77,7 +80,8 @@ describe('Shopping list', () => {
             rend = render(ShoppingList as any, {
                 propsData: {
                     appService: appService
-                }
+                },
+                mocks:{ $t }
             });
         });
 
@@ -112,7 +116,7 @@ describe('Shopping list', () => {
             const addItemButton = getByRole('addButton');
 
             expect(input).toHaveValue(param);
-            expect(await findByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
+            expect(await findByText($t("validation-the_text_must_start"))).toBeInTheDocument();
             expect(addItemButton).toBeDisabled();
         });
 
@@ -239,7 +243,7 @@ describe('Shopping list', () => {
             const deleteAllButton = getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
 
-            const cancelButton = getByText("Cancel");
+            const cancelButton = getByText($t("question-cancel"));
             await fireEvent.click(cancelButton);
             expect(queryByRole('questionForm')).toBeNull();
         });
@@ -256,7 +260,7 @@ describe('Shopping list', () => {
             const { getByRole, getByText} = setUpRender();
             const deleteAllButton = getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
-            const cancelButton = getByText("Cancel");
+            const cancelButton = getByText($t("question-cancel"));
 
             await fireEvent.click(cancelButton);
 
@@ -285,7 +289,7 @@ describe('Shopping list', () => {
 
             await fireEvent.click(deleteAllButton);
 
-            const acceptButton = await findByText("Accept");
+            const acceptButton = await findByText($t("question-accept"));
             await fireEvent.click(acceptButton);
             await waitFor(()=>{
                 expect(queryByRole('questionForm')).toBeNull();
@@ -309,7 +313,7 @@ describe('Shopping list', () => {
 
             const deleteAllButton = getByRole('deleteAllButton');
             await fireEvent.click(deleteAllButton);
-            const acceptButton = await findByText("Accept");
+            const acceptButton = await findByText($t("question-accept"));
 
             await fireEvent.click(acceptButton);
 
@@ -349,7 +353,7 @@ describe('Shopping list', () => {
 
             const deleteBreadButton = await findByRole('deleteItem');
             await fireEvent.click(deleteBreadButton);
-            const cancelButton = await findByText("Cancel");
+            const cancelButton = await findByText($t("question-cancel"));
 
             await fireEvent.click(cancelButton);
 
@@ -370,7 +374,7 @@ describe('Shopping list', () => {
 
             const deleteBreadButton = await findByRole('deleteItem');            
             await fireEvent.click(deleteBreadButton);
-            const acceptButton = await findByText("Accept");
+            const acceptButton = await findByText($t("question-accept"));
 
             await fireEvent.click(acceptButton);
 
@@ -511,7 +515,7 @@ describe('Shopping list', () => {
             await fireEvent.click(editItemButton);
             let inputEdit = await findByRole('nameInput');
             await fireEvent.input(inputEdit, { target: { value: 'milk' } });
-            let acceptButton = await findByText("Accept");
+            let acceptButton = await findByText($t("question-accept"));
             await fireEvent.click(acceptButton);
 
             expect(await findByText('milk')).toBeInTheDocument();
@@ -545,10 +549,10 @@ describe('Shopping list', () => {
             let inputEdit = await findByRole('nameInput');
             await fireEvent.input(inputEdit, { target: { value: '2' } });
 
-            let acceptButton = await findByText("Accept");
+            let acceptButton = await findByText($t("question-accept"));
 
             expect(acceptButton).toBeDisabled();
-            expect(getByText("The text must start with A-Z, a-z or a number but no spaces before the first character")).toBeInTheDocument();
+            expect(getByText($t("validation-the_text_must_start"))).toBeInTheDocument();
         });
     });
 });

@@ -8,22 +8,22 @@
                     </div>
                     <div class="modal-body">
                         <label>
-                            Please, update the name of the item:
+                            {{$t("shopping-list-please-write-the-name")}}
                             <input id="update_name" type="text" role="nameInput" v-model="updatedItem.name" />
                             <br>
                             <div>
                                 <span v-if="error !== ''" class="error">{{ error }}</span>
-                                <span v-else class="info">For example: Jam</span>
+                                <span v-else class="info">{{$t("shopping-list-for-example")}}</span>
                                 <br />
                             </div>
                         </label>
                     </div>
                     <div class="modal-footer">
                         <button class="modal-button" :disabled="!isValidInput()" @click="$emit('ok', $event, updatedItem)">
-                            Accept
+                        {{$t("question-accept")}}
                         </button>
                         <button class="modal-button" @click="$emit('cancel')">
-                            Cancel
+                        {{$t("question-cancel")}}
                         </button>
                     </div>
                 </div>
@@ -67,7 +67,7 @@ export default defineComponent({
             }
 
             if (!result) {
-                this.$data.error = "The text must start with A-Z, a-z or a number but no spaces before the first character";
+                this.$data.error = this.$t("validation-the_text_must_start") as string;
                 return false;
             }
             this.$data.error = "";

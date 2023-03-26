@@ -11,10 +11,10 @@
                     </div>
                     <div class="modal-footer">                        
                         <button  class="modal-button" @click="$emit('ok')">
-                            Accept
+                            {{$t("question-accept")}}
                         </button>
                         <button class="modal-button" @click="$emit('cancel')">
-                            Cancel
+                            {{$t("question-cancel")}}
                         </button>                    
                     </div>
                 </div>

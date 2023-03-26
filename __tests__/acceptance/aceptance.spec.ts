@@ -7,6 +7,8 @@ import '@/environment/loadvariables';
 import { FactoryServiceFixture } from '@/apolloserver/fixtureServiceFactory';
 import BackendServiceFixture from '@/apolloserver/BackendServiceFixture';
 
+const $t = (s:string) => s;
+
 describe('Shopping list acceptance tests', () => {
   const TEMPORAL_MAXIMUM_DELAY_FOR_JEST_TO_WAIT_FIXTURE = 10000;
   const DEFAULT_DELAY_FOR_JEST = 10000;
@@ -70,8 +72,8 @@ describe('Shopping list acceptance tests', () => {
     const addItemButton = getByRole('addButton');
 
     await waitFor(async () => {
-      expect(getByLabelText('Please, write the name of the item:')).toHaveValue('  bre');
-      expect(getByText('The text must start with A-Z, a-z or a number but no spaces before the first character')).toBeInTheDocument();
+      expect(getByLabelText($t("shopping-list-please-write-the-name"))).toHaveValue('  bre');
+      expect(getByText($t("validation-the_text_must_start"))).toBeInTheDocument();
       expect(addItemButton).toBeDisabled();
     });
 
@@ -87,7 +89,7 @@ describe('Shopping list acceptance tests', () => {
     const {getByRole, getByText, findByText} = renderHomeViewPage();
     const deleteAllButton = getByRole('deleteAllButton');
     await fireEvent.click(deleteAllButton);
-    const refuseDeleteAll = await findByText('Cancel');
+    const refuseDeleteAll = await findByText($t("question-cancel"));
 
     await fireEvent.click(refuseDeleteAll);
 
@@ -108,7 +110,7 @@ describe('Shopping list acceptance tests', () => {
     const {queryByText, findByRole, findByText} = renderHomeViewPage();
     const deleteAllButton = await findByRole('deleteAllButton');
     await fireEvent.click(deleteAllButton);
-    const acceptDeleteAll = await findByText('Accept');
+    const acceptDeleteAll = await findByText($t("question-accept"));
 
     await fireEvent.click(acceptDeleteAll);
 
@@ -132,7 +134,7 @@ describe('Shopping list acceptance tests', () => {
     const deleteItemButtons = await findAllByRole('deleteItem');
     const deleteBreadButton = deleteItemButtons[0];
     await fireEvent.click(deleteBreadButton);    
-    const acceptButton = await findByText('Accept');
+    const acceptButton = await findByText($t("question-accept"));
 
     await fireEvent.click(acceptButton);
 
@@ -190,7 +192,7 @@ describe('Shopping list acceptance tests', () => {
     await fireEvent.click(editBreadButton);    
     let inputEdit = await findByRole('nameInput');
     await fireEvent.input(inputEdit, { target: { value: 'RANDOM_ITEM' } });
-    const acceptButton = getByText('Accept');
+    const acceptButton = getByText($t("question-accept"));
 
     await fireEvent.click(acceptButton);    
 
@@ -205,7 +207,8 @@ describe('Shopping list acceptance tests', () => {
     return render(HomeView, {
       props: {
         appService: appService
-      }
+      },
+      mocks:{ $t }
     });
   }
 });

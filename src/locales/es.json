@@ -1,0 +1,20 @@
+{
+    "locale-switcher-english": "Inglés",
+    "locale-switcher-spanish": "Español",
+    "app-home": "Inicio",
+    "app-about": "Acerca de",
+    "about-title": "Esta es la 'Shopping List Kata'",
+    "shopping-list-please-write-the-name":"Por favor, introduce el nombre del elemento:",
+    "shopping-list-add-item":"añade elemento",
+    "shopping-list-delete-all":"borra todo",
+    "shopping-list-item": "Elemento",
+    "shopping-list-quantity": "Cantidad",
+    "shopping-list-action": "Acción",
+    "shopping-list-delete-all-message": "Vas a borrar todos los elementos. ¿quieres continuar?",
+    "shopping-list-your-shopping-list": "Tu lista de la compra",
+    "shopping-list-for-example": "Por ejemplo: Jamón Serrano",
+    "question-accept": "Aceptar",
+    "question-cancel": "Cancelar",
+    "shopping-list-you-are-going-to-remove-one-item": "Vas a eliminar el elemento '%s'. ¿Quieres continuar?",
+    "validation-the_text_must_start":"El texto debe empezar con A-Z, a-z o un número. Sin espacios antes del primer caracter."
+}
