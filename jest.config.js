@@ -9,4 +9,5 @@ module.exports = {
     'src/**/*.{js,vue,ts}',
     '!src/main.js', // No need to cover bootstrap file
   ],
+  testResultsProcessor: 'jest-sonar-reporter'  
 }

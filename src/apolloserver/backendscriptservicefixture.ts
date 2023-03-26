@@ -46,7 +46,7 @@ export class BackendScriptServiceFixture implements BackendServiceFixture {
 
     
     public async init() {
-        try {
+        try {            
             this.startServer();
             await this.waitingForServer();
           } catch (e: Error | unknown) {

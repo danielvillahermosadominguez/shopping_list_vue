@@ -465,3 +465,13 @@ STeps : to be developed. And the problems and solutions:
 
 error:You are running CI analysis while Automatic Analysis is enabled. Please consider disabling one or the other.
 https://community.sonarsource.com/t/sonarcloud-task-fails-because-of-ci-analysis-and-auto-analysis-running/22937
+
+
+Also, you will need: jest-sonar-reporter
+https://community.sonarsource.com/t/test-coverage-using-jest-sonar-reporter-not-shown-in-ui/29231
+```
+npm i -D --save-dev jest-sonar-reporter
+
+```
+
+and for the customization: https://www.npmjs.com/package/jest-sonar-reporter
