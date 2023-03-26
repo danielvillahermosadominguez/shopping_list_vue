@@ -75,7 +75,7 @@ enum Actions {
 export default defineComponent({
     name: "ShoppingList",
     props: {
-        appService: AppService
+        appService: Object as () =>AppService 
     },
     data() {
         return {
@@ -100,15 +100,14 @@ export default defineComponent({
         }
     },
     methods: {      
-        addItem() {
+        async addItem() {
             const item = new ShoppingListItem();
             item.name = this.$data.inputValue;
             item.quantity = 1;
             this.$data.inputValue = "";
             if (this.appService !== undefined) {
-                this.appService.add(item).then(() => {
-                    this.lastAdded = item;
-                });
+                await this.appService.add(item);
+                this.lastAdded = item;
             }
         },
         askToEditItem(item: ShoppingListItem) {            
@@ -190,7 +189,7 @@ export default defineComponent({
         },
         refreshList() {            
             if (this.appService) {
-                this.appService.getItems().then(items => {
+                this.appService.getItems().then((items:Array<ShoppingListItem>) => {
                     this.listItems = items;
                 });
             }
