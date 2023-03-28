@@ -249,4 +249,31 @@ BUGS/PROBLEMS:
   - [MVP 2.0] Use the controls vuetify - Include real backend in spring boot
   - [MVP 2.0]features toggle with configcat - Include real backend in spring boot
   
+28/03/2023
 
+- README => We have decided create an evolutive kata exercise and describe the specific decisions for this part. First Draft
+  
+-Next steps are:          
+  - [Chore] - Cloud basic deployment and dockerization
+  - README => Cloud deployment
+  - README => Format of the review  
+  - README => Review and fix errors in the document.
+  -[First Pilot] Review - Feedback session
+- Some requirements we haven't implemented yet:
+  - Maximum number of rows (pagination) - we don't haver persistency -> mvp 2
+  - Login and a list for each user - users don't need to login now -> mvp 2
+
+- Backlog:
+  - [MVP 1.0] Implementation of AppService with the own storage. A way to deploy and use the App. And also, we can study the storage. Vuex
+  - [MVP 1.0] Deployment in Azure.
+  - [MVP 1.0] ViewModel pattern.
+  - [MVP 1.0] Login
+  - [MVP 1.0] BDD for acceptance tests
+  - [Tech debt] Increase the coverage for some classes. (Utilities and fixtures).
+  - [Tech debt] flacky tests again after refactoring. I removed some unnecesary asserts. Review it.  
+  - [Tech debt] sometimes the fixture for acceptance tests don't finish correctly and we need to terminate the process    
+  - [Tech debt] Common styles for all the application
+  - [MVP 2.0] Maximum number of rows (pagination)
+  - [MVP 2.0] Use the controls vuetify - Include real backend in spring boot
+  - [MVP 2.0]features toggle with configcat - Include real backend in spring boot
+  - [MVP 2.0] Nuxt? We can apply this framework?
