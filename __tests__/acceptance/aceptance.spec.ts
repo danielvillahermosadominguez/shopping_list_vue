@@ -11,7 +11,7 @@ const $t = (s:string) => s;
 
 describe('Shopping list acceptance tests', () => {
   const TEMPORAL_MAXIMUM_DELAY_FOR_JEST_TO_WAIT_FIXTURE = 10000;
-  const DEFAULT_DELAY_FOR_JEST = 10000;
+  const DEFAULT_DELAY_FOR_JEST = 5000;
   const serviceFixture: BackendServiceFixture = FactoryServiceFixture.createBasedOnConfiguration();
   const appService: AppService = serviceFixture.appService;
 

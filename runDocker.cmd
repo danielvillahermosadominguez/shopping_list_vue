@@ -1,0 +1,1 @@
+docker run --detach --publish 6000:80 shoppinglistvue
