@@ -38,6 +38,7 @@ jobs:
 
   build-container:
     name: Build Docker container
+    needs: [ test-and-build ]
     runs-on: ubuntu-latest
     steps:      
       - name: Checkout
@@ -47,4 +48,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME}}
           password: ${{ secrets.DOCKER_HUB_TOKEN}}
+      - name: Build and push docker image
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: .
+          push: true
+          tags: danielvillahermosadominguez/shoppinglistvue
+          
       
