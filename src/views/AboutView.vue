@@ -2,7 +2,7 @@
   <div class="about">
     <h1>{{ $t("about-title") }}</h1>
     <span style="display:block">
-      <p ALIGN=LEFT> We need a web app to manage a list of items. The list of requirements: </p>
+      <p ALIGN=LEFT> We need a web app to manage a list of items. The requirements are: </p>
       <ul>
         <li ALIGN=LEFT>An item has a name must start with A-Z or a-z or a number but no spaces before the first character</li>
         <li ALIGN=LEFT>The user can add an item </li>

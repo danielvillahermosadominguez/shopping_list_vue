@@ -497,3 +497,10 @@ module.exports = {
     config.plugin("polyfills").use(NodePolyfillPlugin);
   },
 };
+
+
+Despliegues Azure:
+
+az ad sp create-for-rbac --name "CICD" --role contributor --scopes /subscriptions/{id suscription} --sdk-auth
+
+esto te da lo que tienes que usar en github actions
