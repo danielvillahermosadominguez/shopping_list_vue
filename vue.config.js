@@ -2,6 +2,10 @@ const { defineConfig } = require('@vue/cli-service')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = defineConfig({
+  devServer: {
+    // 'auto' | 'all' [string] here
+    allowedHosts: 'all',
+  },
   transpileDependencies: true,
 
   pluginOptions: {

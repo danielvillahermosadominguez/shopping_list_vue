@@ -1,1 +1,1 @@
-docker run --detach --publish 6000:80 shoppinglistvue
+docker run -it --detach --publish 8080:8080 --publish 4000:4000 shoppinglistvue
