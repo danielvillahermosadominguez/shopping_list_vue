@@ -103,7 +103,7 @@ function startServer() {
         resolvers
     });
 
-    server.listen().then(({ url }) => {
+    server.listen({port:443}).then(({ url }) => {
         console.log(`Server ready at ${url}`)
     });
     return true;

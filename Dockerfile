@@ -11,5 +11,5 @@ RUN npm run build
 
 
 EXPOSE 8080
-EXPOSE 4000
+EXPOSE 443
 CMD sh start.sh
