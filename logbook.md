@@ -308,3 +308,65 @@ BUGS/PROBLEMS:
   - [MVP 2.0] Use the controls vuetify - Include real backend in spring boot
   - [MVP 2.0]features toggle with configcat - Include real backend in spring boot
   - [MVP 2.0] Nuxt? We can apply this framework?
+
+23/04/2023
+- [Chore] - Cloud basic deployment and dockerization
+    - The pipeline push a dockerfile which works in local
+    - We load in the same docker container the server in memory and the vue app. It is working.
+    - We can deploy in docker hub with github actions 
+    - We can deploy in register provider in Azure
+    - We can deploy in a web app with docker. We haver the web service created and start/stop the service in each deployment
+    - We have a delay since the deploy is working, surely we can use a blue green deployment
+    - the configuration of the web app should use the memory to store the data in this first version (by configuration)
+-Next steps are:           
+  - README => Cloud deployment
+  - README => Format of the review  
+  - README => Review and fix errors in the document.
+  -[First Pilot] Review - Feedback session
+- Some requirements we haven't implemented yet:
+  - Maximum number of rows (pagination) - we don't haver persistency -> mvp 2
+  - Login and a list for each user - users don't need to login now -> mvp 2
+
+- Backlog:
+  - [MVP 1.0] Implementation of AppService with the own storage. A way to deploy and use the App. And also, we can study the storage. Vuex
+  - [MVP 1.0] Deployment in Azure.
+  - [MVP 1.0] ViewModel pattern.
+  - [MVP 1.0] Login
+  - [MVP 1.0] BDD for acceptance tests
+  - [Tech debt] Increase the coverage for some classes. (Utilities and fixtures).
+  - [Tech debt] flacky tests again after refactoring. I removed some unnecesary asserts. Review it.  
+  - [Tech debt] sometimes the fixture for acceptance tests don't finish correctly and we need to terminate the process    
+  - [Tech debt] Common styles for all the application
+  - [MVP 2.0] Maximum number of rows (pagination)
+  - [MVP 2.0] Use the controls vuetify - Include real backend in spring boot
+  - [MVP 2.0]features toggle with configcat - Include real backend in spring boot
+  - [MVP 2.0] Nuxt? We can apply this framework?
+
+
+25/04/2023
+- chore: The service, by configuration, doesn't use backend. In this way, we can deploy only the front.
+- Some information about the configuration is included in the .env
+  
+-Next steps are:           
+  - README => Cloud deployment
+  - README => Format of the review  
+  - README => Review and fix errors in the document.
+  -[First Pilot] Review - Feedback session
+- Some requirements we haven't implemented yet:
+  - Maximum number of rows (pagination) - we don't haver persistency -> mvp 2
+  - Login and a list for each user - users don't need to login now -> mvp 2
+
+- Backlog:
+  - [MVP 1.0] Implementation of AppService with the own storage. A way to deploy and use the App. And also, we can study the storage. Vuex
+  - [MVP 1.0] Deployment in Azure.
+  - [MVP 1.0] ViewModel pattern.
+  - [MVP 1.0] Login
+  - [MVP 1.0] BDD for acceptance tests
+  - [Tech debt] Increase the coverage for some classes. (Utilities and fixtures).
+  - [Tech debt] flacky tests again after refactoring. I removed some unnecesary asserts. Review it.  
+  - [Tech debt] sometimes the fixture for acceptance tests don't finish correctly and we need to terminate the process    
+  - [Tech debt] Common styles for all the application
+  - [MVP 2.0] Maximum number of rows (pagination)
+  - [MVP 2.0] Use the controls vuetify - Include real backend in spring boot
+  - [MVP 2.0]features toggle with configcat - Include real backend in spring boot
+  - [MVP 2.0] Nuxt? We can apply this framework?

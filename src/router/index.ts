@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import AppServiceApollo from '@/appservices/AppServiceApollo'
+import { AppServiceFactory } from '@/appservices/AppServiceFactory'
 
 Vue.use(VueRouter)
 
@@ -10,7 +10,7 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'home',
     props: {
-      appService: new AppServiceApollo(process.env.VUE_APP_SERVICE_BACKEND),
+      appService: AppServiceFactory.createBasedOnConfiguration(),
     },   
     component: HomeView
   },
