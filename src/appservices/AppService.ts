@@ -1,6 +1,6 @@
 import ShoppingListItem from "./ShoppingListItem";
 export default interface AppService {    
-  add(item: ShoppingListItem):void;
+  add(item: ShoppingListItem): Promise<void>;
 
   getItems(): Promise<Array<ShoppingListItem>>
 

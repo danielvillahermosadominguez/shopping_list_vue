@@ -81,7 +81,7 @@ export default defineComponent({
         return {
             inputValue: '',
             listItems: [] as Array<ShoppingListItem>,
-            lastAdded: emptyShoppingItem as ShoppingListItem,
+            lastAdded: emptyShoppingItem,
             error: '',
             showModal: false,
             showEdit: false,
@@ -262,8 +262,7 @@ table {
 }
 
 th {
-    font-size: 13px;
-    font-weight: normal;
+    font-size: 13px;    
     padding: 8px;
     background: #b9c9fe;
     border-top: 1px solid #aabcfe;
@@ -294,8 +293,7 @@ label {
 
 input {    
     padding: 3px;
-    margin: 3px;
-    padding: 3px;
+    margin: 3px;    
     font-size: 14px;
     font-weight: 600;
     width: 300px;

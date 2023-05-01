@@ -86,7 +86,7 @@ const resolvers = {
         },
         deleteItem: async (root, args) => {            
             console.log("delete item");  
-            const index = await shoppingLists.findIndex(p=> p.id === args.id);
+            const index = shoppingLists.findIndex(p=> p.id === args.id);
             if( index !== -1) {                                
                 shoppingLists.splice(index,1);
                 return 1;

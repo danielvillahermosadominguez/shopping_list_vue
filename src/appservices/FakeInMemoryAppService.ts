@@ -6,7 +6,7 @@ const { v4 } = require("uuid");
 
 export class InMemoryCacheAppServiceFake implements AppService {
     private shoppingLists: Array<ShoppingListItem> = new Array<ShoppingListItem>();
-    async add(item: ShoppingListItem) {
+    async add(item: ShoppingListItem):Promise<void> {
         let itemFound = undefined;
         if (item.id !== '') {
             itemFound = await this.shoppingLists.find(p => p.id === item.id);
@@ -15,12 +15,11 @@ export class InMemoryCacheAppServiceFake implements AppService {
         if (itemFound === undefined) {
             item.id = v4();
             this.shoppingLists.push(item)
-            return item;
+            return;
         }
 
         itemFound.quantity += 1;
-        return itemFound;
-
+        return;
     }
     async getItems(): Promise<ShoppingListItem[]> {
         return new Promise((resolve) => {

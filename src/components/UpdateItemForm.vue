@@ -46,8 +46,8 @@ export default defineComponent({
     },
     data() {
         return {
-            updatedItem: new ShoppingListItem() as ShoppingListItem,
-            validator: new NameValidator() as NameValidator,
+            updatedItem: new ShoppingListItem(),
+            validator: new NameValidator(),
             error: '' as string
         }
     },

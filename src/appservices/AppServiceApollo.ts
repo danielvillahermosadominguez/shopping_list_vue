@@ -35,7 +35,7 @@ export default class AppServiceApollo implements AppService {
 
   }
 
-  public async add(item: ShoppingListItem) {
+  public async add(item: ShoppingListItem) : Promise<void>{
     const id: string = item.id;
     const name: string = item.name;
     const quantity: number = item.quantity;
