@@ -3,6 +3,20 @@
   "locale-switcher-spanish": "Spanish",
   "app-home": "Home",
   "app-about": "About",
+  "app-about-content-line-1":"We need a web app to manage a list of items. The requirements are: ",
+  "app-about-content-line-2":"An item has a name must start with A-Z or a-z or a number but no spaces before the first character", 
+  "app-about-content-line-3": "The user can add an item",   
+  "app-about-content-line-4": "The user can remove a selected item",
+  "app-about-content-line-5": "The user can modify the name of an item",
+  "app-about-content-line-6": "The quantity of a bought item, should be shown",
+  "app-about-content-line-7": "The user can delete all the items, but it should be warned about this action",
+  "app-about-content-line-8": "The user interface must allow to the user to do this actions. Some recomendations:",
+  "app-about-content-line-9": "A button for each action is a good option for the user. The user could be interested to have a button in the own item to remove and update",
+  "app-about-content-line-10": "An input text for the name of the item could be a good option when the user is adding a new item",
+  "app-about-content-line-11": "Not more than 10 items should be presented in the screen at once",
+  "app-about-content-line-12": "The name and the quantity of the item could be shown in table row format, it's a good option for the user",
+  "app-about-content-line-13": "Messages for validations should be shown. For example, a little message below the inputs fields" ,
+  "app-about-content-line-14": "Every user should have their own shopping list and they shouldn't see the shopping list of other users",
   "about-title": "This is the Shopping List Kata",
   "shopping-list-please-write-the-name":"Please, write the name of the item:",
   "shopping-list-add-item":"add item",
@@ -17,4 +31,5 @@
   "question-cancel": "Cancel",
   "shopping-list-you-are-going-to-remove-one-item": "You are going to remove the item '%s'. Are you sure?",
   "validation-the_text_must_start":"The text must start with A-Z, a-z or a number but no spaces before the first character"
+
 }
