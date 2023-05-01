@@ -50,8 +50,9 @@ https://www.smashingmagazine.com/2020/11/vue-applications-vue-testing-library/
   * component: focused on the component behaviours without to take into account integrations with other components or pages = testing library + jest
   * Page: For us, our aceptance test. Integration of the components and graphql. For this purpose, we have created a fixture which is a light backend with the data in memory.
   * end to end: we haven't done this kind of tests in this kata. You should use cypress or a similar tool but we think they are not neccesary at this moment.
-* **Continuous integration**. We use github actions to transpile the application, pass the acceptance, component and unit tests and scan the code quality with sonarqube.
-*  ** Deployment **. (To be developed) We have used Azure to deploy and docker. Github actions do it in a job.
+* **Continuous Delivery**. We use github actions to transpile the application, pass the acceptance, component and unit tests and scan the code quality with sonarqube.
+*  ** Deployment **. We have used Azure to deploy and docker. Github actions do it in a job.
+
 
 
 
