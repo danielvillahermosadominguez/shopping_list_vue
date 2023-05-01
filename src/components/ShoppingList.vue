@@ -20,6 +20,7 @@
                 </div>
                 <h1> {{$t("shopping-list-your-shopping-list")}}   </h1>
                 <table role="itemList" class="table">
+                    <caption>{{$t("shopping-list-your-shopping-list")}}</caption>
                     <thead>
                         <tr class="tr">                           
                             <th style="width:60%">
@@ -42,10 +43,10 @@
                                 <button role="decreaseQuantity" :disabled="item.quantity <= 1"
                                     @click="increaseItem(item, -1)">-</button>
                                 <button role="editItem" @click="askToEditItem(item)">
-                                    <img src="@/assets/edit.png" heigth="10px" width="10px">
+                                    <img src="@/assets/edit.png" heigth="10px" width="10px" alt ="edit')">
                                 </button>
                                 <button role="deleteItem" v-on:click="askToDeleteOne(item)">
-                                    <img src="@/assets/deleteItem.png" heigth="10px" width="10px">
+                                    <img src="@/assets/deleteItem.png" heigth="10px" width="10px" alt ="delete">
                                 </button>
                             </td>
                         </tr>
