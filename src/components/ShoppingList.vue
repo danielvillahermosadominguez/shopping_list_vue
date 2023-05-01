@@ -88,7 +88,7 @@ export default defineComponent({
             modalMessage: '',
             action: Actions.none,
             actionArgument: undefined as ShoppingListItem | undefined,
-            validator: new NameValidator() as NameValidator
+            validator: new NameValidator()
         };
     },
     mounted() {        

@@ -18,8 +18,7 @@ export class InMemoryCacheAppServiceFake implements AppService {
             return;
         }
 
-        itemFound.quantity += 1;
-        return;
+        itemFound.quantity += 1;        
     }
     async getItems(): Promise<ShoppingListItem[]> {
         return new Promise((resolve) => {
