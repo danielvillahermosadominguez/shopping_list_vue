@@ -61,7 +61,7 @@ jobs:
           creds: ${{ secrets.AZ_CREDENTIALS }}        
       - uses: azure/webapps-deploy@v2
         with:
-          app-name: 'CloudQuickLabsWebApp'
+          app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }} 
           images: ${{ secrets.ACR_ENDPOINT }}
       - name: Azure logout
         run:
