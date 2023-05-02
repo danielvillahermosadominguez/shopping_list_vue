@@ -1,5 +1,5 @@
 #!/bin/bash
-
+sudo cp .env_prod .env
 # Start the first process
 node ./src/apolloserver/fixtureServiceMemoryStorage.mjs &
   
