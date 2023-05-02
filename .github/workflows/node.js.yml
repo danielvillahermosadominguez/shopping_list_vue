@@ -60,6 +60,7 @@ jobs:
         with:
           creds: ${{ secrets.AZ_CREDENTIALS }}        
       - name: ' Development environment in virtual machine - restart vm'
+        continue-on-error: true
         run:
           az vm restart --name shoppinglistvm --resource-group shoppinglistvm_group --force
       - uses: azure/webapps-deploy@v2
