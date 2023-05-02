@@ -59,6 +59,9 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZ_CREDENTIALS }}        
+      - name: ' Development environment in virtual machine - restart vm'
+        run:
+          az vm restart --name shoppinglistvm --resource-group shoppinglistvm_group --force
       - uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ secrets.AZURE_APP_SERVICE_NAME }} 
